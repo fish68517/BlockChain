@@ -1,2 +1,0 @@
-CCToken Contract Address = 0x60c5eb023F7778031F542ece23dff7165a515CC0;
-CCProject Factory Address = 0xc2B45f7DfCf4Fb869133cC35BEdaA9c63D95Fda3;
