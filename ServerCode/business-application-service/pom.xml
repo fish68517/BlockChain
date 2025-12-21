@@ -154,28 +154,6 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
 		</dependency>
-
-		<!-- Web3j Ethereum Integration -->
-		<dependency>
-			<groupId>org.web3j</groupId>
-			<artifactId>core</artifactId>
-			<version>4.9.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.web3j</groupId>
-			<artifactId>contracts</artifactId>
-			<version>4.9.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.web3j</groupId>
-			<artifactId>ens</artifactId>
-			<version>4.9.7</version>
-		</dependency>
-		<!-- JSON Processing -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
