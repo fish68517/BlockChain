@@ -1,8 +1,16 @@
 const React = require("react");
 const { connect } = require("react-redux");
 const { Button } = require("react-bootstrap");
-const MetaConnectModal = require("../../components/web3/MetaConnectModal");
-const { setRestorerCCProjectListing } = require("../../utils/web3Utils");
+const { setRestorer } = require("../../utils/blockchainAPI");
+
+// Helper function to append zeros (convert to wei)
+const appendZeros = (amount, count) => {
+  amount = amount.toString();
+  for (let i = 0; i < count; i++) {
+    amount = amount + "0";
+  }
+  return amount;
+};
 
 const Modal = require("../../components/common/Modal");
 const { getAllBids, selectBid } = require("../../actions/BidListings");
@@ -13,12 +21,11 @@ class AllBids extends React.Component {
     this.state = {
       content: "Review submitted restoration bids",
       showSelectedBids: false,
-      showModal: false,
+      error: null,
     };
 
     this.toggleBids = this.toggleBids.bind(this);
     this.handleSelectBtn = this.handleSelectBtn.bind(this);
-    this.setShowModal = this.setShowModal.bind(this);
   }
 
   loadFromServer() {
@@ -32,28 +39,21 @@ class AllBids extends React.Component {
 
   // change the status of bid listing once it gets selected
   async handleSelectBtn(id, biddingPrice, restorerAddress, projectAddress) {
-    if (window.ethereum) {
-      console.log(biddingPrice, restorerAddress, projectAddress);
-      await setRestorerCCProjectListing(
-        projectAddress,
-        restorerAddress,
-        biddingPrice
-      );
-    } else {
-      this.setShowModal(true);
-      throw "Unable to set the selected restorer";
+    try {
+      // Convert bidding price to wei (18 decimals) - smart contract expects funding goal in wei
+      const fundingGoalWei = appendZeros(biddingPrice, 18);
+      
+      await setRestorer(projectAddress, restorerAddress, fundingGoalWei);
+      this.props.dispatch(selectBid(id));
+      this.setState({ error: null });
+    } catch (error) {
+      console.error("Error setting restorer:", error);
+      this.setState({ error: error.message || "Unable to set the selected restorer" });
     }
-    this.props.dispatch(selectBid(id));
   }
 
   componentDidMount() {
     this.loadFromServer();
-  }
-
-  setShowModal(show) {
-    this.setState({
-      showModal: show,
-    });
   }
 
   render() {
@@ -72,13 +72,14 @@ class AllBids extends React.Component {
 
     return (
       <div className="container">
-        <MetaConnectModal
-          showModal={this.state.showModal}
-          setShowModal={this.setShowModal}
-        />
         <div className="header">
           <h3>{this.state.content}</h3>
         </div>
+        {this.state.error && (
+          <div className="alert alert-danger" role="alert">
+            {this.state.error}
+          </div>
+        )}
         <div className="mb-2">
           <Button variant="primary" onClick={() => this.toggleBids(false)}>
             All Bids

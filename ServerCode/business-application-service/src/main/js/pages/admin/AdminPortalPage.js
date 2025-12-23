@@ -62,10 +62,10 @@ class AdminPortal extends React.Component {
         <header className="jumbotron">
           <h3>{this.state.content}</h3>
         </header>
-        <div className="mb-2">
-          <Button variant="primary" onClick={() => this.toggleProjects(false)}>
+        <div className="mb-4">
+          <Button variant="primary" className="me-2" onClick={() => this.toggleProjects(false)}>
             All Projects
-          </Button>{" "}
+          </Button>
           <Button variant="success" onClick={() => this.toggleProjects(true)}>
             Approved Projects
           </Button>

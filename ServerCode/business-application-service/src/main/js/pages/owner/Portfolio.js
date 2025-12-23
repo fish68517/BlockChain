@@ -37,8 +37,8 @@ function Portfolio({ user, dispatch, listings }) {
   };
 
   const renderBody = () => {
-    if (isLoading) return <div>Loading....</div>;
-    if (error) return <div>{error}</div>;
+    if (isLoading) return <div className="loading-state">Loading portfolio...</div>;
+    if (error) return <div className="error-state">Error: {error}</div>;
 
     return (
       <ProjectListingsList onRemove={onRemove} projectListings={listings} />
@@ -47,8 +47,9 @@ function Portfolio({ user, dispatch, listings }) {
 
   return (
     <div className="container">
-      <div className="page-title my-3">
+      <div className="page-title my-4">
         <h3>My Portfolio</h3>
+        <p className="text-muted">Manage your vehicle restoration projects</p>
       </div>
       {renderBody()}
     </div>

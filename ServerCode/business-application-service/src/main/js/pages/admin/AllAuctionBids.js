@@ -3,12 +3,10 @@ const { connect } = require("react-redux");
 const { Button } = require("react-bootstrap");
 
 const Modal = require("../../components/common/Modal");
-const MetaConnectModal = require("../../components/web3/MetaConnectModal");
-
 const {
-  setBuyerCCProjectListing,
-  redistributeCCProjectListing,
-} = require("../../utils/web3Utils");
+  setBuyer,
+  redistribute,
+} = require("../../utils/blockchainAPI");
 
 const {
   getAllAuctionBids,
@@ -21,18 +19,11 @@ class AllAuctionBids extends React.Component {
     this.state = {
       content: "Review submitted auction bids",
       showSelectedBids: false,
-      showModal: false,
+      error: null,
     };
 
     this.toggleBids = this.toggleBids.bind(this);
     this.handleSelectBtn = this.handleSelectBtn.bind(this);
-    this.setShowModal = this.setShowModal.bind(this);
-  }
-
-  setShowModal(show) {
-    this.setState({
-      showModal: show,
-    });
   }
 
   loadFromServer() {
@@ -46,14 +37,15 @@ class AllAuctionBids extends React.Component {
 
   // change the status of bid listing once it gets selected
   async handleSelectBtn(id, buyerAddress, projectAddress) {
-    if (window.ethereum) {
-      await setBuyerCCProjectListing(projectAddress, buyerAddress);
-      await redistributeCCProjectListing(projectAddress);
-    } else {
-      this.setShowModal(true);
-      throw "Unable to set the selected buyer";
+    try {
+      await setBuyer(projectAddress, buyerAddress);
+      await redistribute(projectAddress);
+      this.props.dispatch(selectAuctionBid(id));
+      this.setState({ error: null });
+    } catch (error) {
+      console.error("Error setting buyer and redistributing:", error);
+      this.setState({ error: error.message || "Unable to set the selected buyer" });
     }
-    this.props.dispatch(selectAuctionBid(id));
   }
 
   componentDidMount() {
@@ -78,13 +70,14 @@ class AllAuctionBids extends React.Component {
 
     return (
       <div className="container">
-        <MetaConnectModal
-          setShowModal={this.setShowModal}
-          showModal={this.state.showModal}
-        />
         <div className="header">
           <h3>{this.state.content}</h3>
         </div>
+        {this.state.error && (
+          <div className="alert alert-danger" role="alert">
+            {this.state.error}
+          </div>
+        )}
         <div className="mb-2">
           <Button variant="primary" onClick={() => this.toggleBids(false)}>
             All Auction Bids

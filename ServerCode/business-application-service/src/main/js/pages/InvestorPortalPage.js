@@ -27,8 +27,8 @@ function InvestorPortal({ user, dispatch, listings }) {
   }, [user.accessToken]);
 
   const renderBody = () => {
-    if (isLoading) return <div>Loading....</div>;
-    if (error) return <div>{error}</div>;
+    if (isLoading) return <div className="loading-state">Loading projects...</div>;
+    if (error) return <div className="error-state">Error: {error}</div>;
 
     return (
       <ProjectListingListInvestor projectListings={listings} user={user} />
@@ -37,8 +37,9 @@ function InvestorPortal({ user, dispatch, listings }) {
 
   return (
     <div className="container">
-      <div className="page-title my-3">
-        <h3>All listings:</h3>
+      <div className="page-title my-4">
+        <h3>All Available Projects</h3>
+        <p className="text-muted">Browse and invest in restoration projects</p>
       </div>
       {renderBody()}
     </div>

@@ -19,20 +19,28 @@ const PostItemForSale = require("../../components/admin/PostItemForSale");
 const StartAuction = require("../../components/admin/StartAuction");
 const AssignRestoration = require("../../components/admin/AssignRestoration");
 const ProjectListingStatus = require("../../components/common/ProjectListingStatus");
-const MetaConnectModal = require("../../components/web3/MetaConnectModal");
+
+// Helper function to append zeros (convert to wei)
+const appendZeros = (amount, count) => {
+  amount = amount.toString();
+  for (let i = 0; i < count; i++) {
+    amount = amount + "0";
+  }
+  return amount;
+};
 
 const {
-  approveCCProjectListing,
-  saveEstCCProjectListing,
-  assignRestorationCCProjectListing,
-  openAuctionCCProjectListing,
-} = require("../../utils/web3Utils");
+  approveProject,
+  saveEstimations,
+  assignRestoration: assignRestorationBlockchain,
+  openAuction,
+} = require("../../utils/blockchainAPI");
 
 function ProjectListingDetails({ projectListings, dispatch }) {
   const { id } = useParams();
   const listing = projectListings.find((p) => p.id === parseInt(id));
 
-  const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState(null);
 
   const fetchFile = () => {
     http()
@@ -62,27 +70,29 @@ function ProjectListingDetails({ projectListings, dispatch }) {
   };
 
   const onSubmitEstimationsHandler = async (valueEstimation, repairCost) => {
-    if (window.ethereum) {
-      await saveEstCCProjectListing(
-        listing.projectAddress,
-        valueEstimation,
-        repairCost
-      );
-    } else {
-      setShowModal(true);
-      throw "Unable to update estimations in smart contract";
+    try {
+      // Convert to wei (18 decimals) - smart contract expects values in wei
+      const valueEstWei = appendZeros(valueEstimation, 18);
+      const repairCostWei = appendZeros(repairCost, 18);
+      
+      await saveEstimations(listing.projectAddress, valueEstWei, repairCostWei);
+      return onSubmitEstimations(valueEstimation, repairCost);
+    } catch (error) {
+      console.error("Error saving estimations:", error);
+      setError(error.message || "Unable to update estimations in smart contract");
+      throw error;
     }
-    return onSubmitEstimations(valueEstimation, repairCost);
   };
 
   const onAssignRestoration = async () => {
-    if (window.ethereum) {
-      await assignRestorationCCProjectListing(listing.projectAddress);
-    } else {
-      setShowModal(true);
-      throw "Unable to assign restoration in smart contract";
+    try {
+      await assignRestorationBlockchain(listing.projectAddress);
+      return dispatch(assignRestoration(id));
+    } catch (error) {
+      console.error("Error assigning restoration:", error);
+      setError(error.message || "Unable to assign restoration in smart contract");
+      throw error;
     }
-    return dispatch(assignRestoration(id));
   };
 
   const onPostItemForSale = () => {
@@ -90,13 +100,14 @@ function ProjectListingDetails({ projectListings, dispatch }) {
   };
 
   const onStartAuction = async () => {
-    if (window.ethereum) {
-      await openAuctionCCProjectListing(listing.projectAddress);
-    } else {
-      setShowModal(true);
-      throw "Unable to start auction in smart contract";
+    try {
+      await openAuction(listing.projectAddress);
+      return dispatch(startAuction(id));
+    } catch (error) {
+      console.error("Error starting auction:", error);
+      setError(error.message || "Unable to start auction in smart contract");
+      throw error;
     }
-    return dispatch(startAuction(id));
   };
 
   const onSubmitApproval = (areDetailsVerified, isTitleReceived, message) => {
@@ -114,13 +125,14 @@ function ProjectListingDetails({ projectListings, dispatch }) {
     isTitleReceived,
     message = null
   ) => {
-    if (window.ethereum) {
-      await approveCCProjectListing(listing.projectAddress);
-    } else {
-      setShowModal(true);
-      throw "Unable to update approval in smart contract";
+    try {
+      await approveProject(listing.projectAddress);
+      return onSubmitApproval(areDetailsVerified, isTitleReceived, message);
+    } catch (error) {
+      console.error("Error approving project:", error);
+      setError(error.message || "Unable to update approval in smart contract");
+      throw error;
     }
-    return onSubmitApproval(areDetailsVerified, isTitleReceived, message);
   };
 
   const onSubmitReject = () => {
@@ -143,20 +155,34 @@ function ProjectListingDetails({ projectListings, dispatch }) {
 
   return (
     <div className="container project-details-page">
-      <MetaConnectModal setShowModal={setShowModal} showModal={showModal} />
       <h3>Project Details</h3>
-      <div className="my-1">
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+      <div className="my-3">
         <ProjectListingStatus listing={listing} />
       </div>
-      <div>
-        {listing.make} {listing.model}
+      <div className="mb-2">
+        <strong>Vehicle: </strong>{listing.make} {listing.model}
       </div>
-      <div>CCPG: {listing.ccpg}</div>
-      <div>VIN: {listing.vin}</div>
-      <div>Initial funding requested: {listing.fundingGoal}</div>
-      {listing.description && <div>Description: {listing.description}</div>}
-      <button className="btn btn-link p-0" onClick={fetchFile}>
-        Proof of ownership
+      <div className="mb-2">
+        <strong>CCPG: </strong><span className="text-primary">{listing.ccpg}</span>
+      </div>
+      <div className="mb-2">
+        <strong>VIN: </strong>{listing.vin}
+      </div>
+      <div className="mb-2">
+        <strong>Initial funding requested: </strong><span className="text-success fw-bold">{listing.fundingGoal}</span>
+      </div>
+      {listing.description && (
+        <div className="mb-2">
+          <strong>Description: </strong>{listing.description}
+        </div>
+      )}
+      <button className="btn btn-outline-primary mt-2" onClick={fetchFile}>
+        📄 View Proof of Ownership
       </button>
       <Approve
         listing={listing}

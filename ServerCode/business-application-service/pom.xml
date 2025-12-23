@@ -23,7 +23,19 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<fabric8.version>3.5.40</fabric8.version>
 		<version.commons-dbcp2>2.5.0</version.commons-dbcp2>
+		<okhttp.version>4.9.3</okhttp.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Force OkHttp 4.x for Web3j compatibility -->
+			<dependency>
+				<groupId>com.squareup.okhttp3</groupId>
+				<artifactId>okhttp</artifactId>
+				<version>${okhttp.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -153,6 +165,23 @@
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
+		</dependency>
+		<!-- Web3j for Ethereum blockchain integration -->
+		<dependency>
+			<groupId>org.web3j</groupId>
+			<artifactId>core</artifactId>
+			<version>4.9.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.web3j</groupId>
+			<artifactId>contracts</artifactId>
+			<version>4.9.8</version>
+		</dependency>
+		<!-- OkHttp 4.x for Web3j compatibility -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>${okhttp.version}</version>
 		</dependency>
 	</dependencies>
 

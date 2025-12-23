@@ -22,7 +22,9 @@ const MetaConnect = () => {
       setUserBalance(await getCCTokenBalance());
       setConnected(true);
     } catch (ex) {
-      console.log(ex);
+      console.error("Failed to connect wallet:", ex);
+      // Show user-friendly error message
+      alert(`Cannot connect wallet: ${ex}. Please ensure:\n1. Hardhat node is running (npx hardhat node)\n2. MetaMask is connected to "Localhost 8545" (Chain ID: 31337)\n3. Contracts are deployed to Hardhat network`);
     }
   };
 

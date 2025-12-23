@@ -90326,19 +90326,36 @@ var ProjectListing = function ProjectListing(_ref) {
     fundingGoal = projectListing.fundingGoal,
     vin = projectListing.vin;
   return /*#__PURE__*/React.createElement("div", {
-    className: "card mt-2"
+    className: "card"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "card-header"
+  }, /*#__PURE__*/React.createElement(Link, {
+    to: "/listings/".concat(id),
+    style: {
+      textDecoration: 'none',
+      color: 'inherit'
+    }
+  }, /*#__PURE__*/React.createElement("h5", {
+    className: "mb-0"
+  }, make, " ", model))), /*#__PURE__*/React.createElement("div", {
     className: "card-body"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "card-title"
-  }, /*#__PURE__*/React.createElement(Link, {
-    to: "/listings/".concat(id)
-  }, /*#__PURE__*/React.createElement("h5", null, make, " ", model)), /*#__PURE__*/React.createElement("div", {
-    className: "text-small"
-  }, "VIN: ", vin)), /*#__PURE__*/React.createElement("div", {
-    className: "card-text"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "CCPG: "), ccpg), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "Funding Goal: "), fundingGoal)), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-link p-0",
+    className: "text-small mb-3",
+    style: {
+      color: '#718096'
+    }
+  }, "VIN: ", vin), /*#__PURE__*/React.createElement("div", {
+    className: "card-text mb-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "CCPG: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-primary"
+  }, ccpg)), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "Funding Goal: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-success fw-bold"
+  }, fundingGoal))), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-outline-danger btn-sm",
     onClick: function onClick() {
       return onRemove(id);
     }
@@ -90842,13 +90859,15 @@ var MetaConnect = function MetaConnect() {
             _context.t1 = _context.sent;
             (0, _context.t0)(_context.t1);
             setConnected(true);
-            _context.next = 12;
+            _context.next = 13;
             break;
           case 9:
             _context.prev = 9;
             _context.t2 = _context["catch"](0);
-            console.log(_context.t2);
-          case 12:
+            console.error("Failed to connect wallet:", _context.t2);
+            // Show user-friendly error message
+            alert("Cannot connect wallet: ".concat(_context.t2, ". Please ensure:\n1. Hardhat node is running (npx hardhat node)\n2. MetaMask is connected to \"Localhost 8545\" (Chain ID: 31337)\n3. Contracts are deployed to Hardhat network"));
+          case 13:
           case "end":
             return _context.stop();
         }
@@ -91398,8 +91417,12 @@ function InvestorPortal(_ref) {
     }
   }, [user.accessToken]);
   var renderBody = function renderBody() {
-    if (isLoading) return /*#__PURE__*/React.createElement("div", null, "Loading....");
-    if (error) return /*#__PURE__*/React.createElement("div", null, error);
+    if (isLoading) return /*#__PURE__*/React.createElement("div", {
+      className: "loading-state"
+    }, "Loading projects...");
+    if (error) return /*#__PURE__*/React.createElement("div", {
+      className: "error-state"
+    }, "Error: ", error);
     return /*#__PURE__*/React.createElement(ProjectListingListInvestor, {
       projectListings: listings,
       user: user
@@ -91408,8 +91431,10 @@ function InvestorPortal(_ref) {
   return /*#__PURE__*/React.createElement("div", {
     className: "container"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "page-title my-3"
-  }, /*#__PURE__*/React.createElement("h3", null, "All listings:")), renderBody());
+    className: "page-title my-4"
+  }, /*#__PURE__*/React.createElement("h3", null, "All Available Projects"), /*#__PURE__*/React.createElement("p", {
+    className: "text-muted"
+  }, "Browse and invest in restoration projects")), renderBody());
 }
 function mapStateToProps(_ref2) {
   var auth = _ref2.auth,
@@ -91515,13 +91540,14 @@ var AdminPortal = /*#__PURE__*/function (_React$Component) {
       }, /*#__PURE__*/React.createElement("header", {
         className: "jumbotron"
       }, /*#__PURE__*/React.createElement("h3", null, this.state.content)), /*#__PURE__*/React.createElement("div", {
-        className: "mb-2"
+        className: "mb-4"
       }, /*#__PURE__*/React.createElement(Button, {
         variant: "primary",
+        className: "me-2",
         onClick: function onClick() {
           return _this2.toggleProjects(false);
         }
-      }, "All Projects"), " ", /*#__PURE__*/React.createElement(Button, {
+      }, "All Projects"), /*#__PURE__*/React.createElement(Button, {
         variant: "success",
         onClick: function onClick() {
           return _this2.toggleProjects(true);
@@ -91633,10 +91659,9 @@ var _require = __webpack_require__(/*! react-redux */ "./node_modules/react-redu
 var _require2 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js"),
   Button = _require2.Button;
 var Modal = __webpack_require__(/*! ../../components/common/Modal */ "./src/main/js/components/common/Modal.js");
-var MetaConnectModal = __webpack_require__(/*! ../../components/web3/MetaConnectModal */ "./src/main/js/components/web3/MetaConnectModal.js");
-var _require3 = __webpack_require__(/*! ../../utils/web3Utils */ "./src/main/js/utils/web3Utils.js"),
-  setBuyerCCProjectListing = _require3.setBuyerCCProjectListing,
-  redistributeCCProjectListing = _require3.redistributeCCProjectListing;
+var _require3 = __webpack_require__(/*! ../../utils/blockchainAPI */ "./src/main/js/utils/blockchainAPI.js"),
+  setBuyer = _require3.setBuyer,
+  redistribute = _require3.redistribute;
 var _require4 = __webpack_require__(/*! ../../actions/AuctionBid */ "./src/main/js/actions/AuctionBid.js"),
   getAllAuctionBids = _require4.getAllAuctionBids,
   selectAuctionBid = _require4.selectAuctionBid;
@@ -91648,22 +91673,14 @@ var AllAuctionBids = /*#__PURE__*/function (_React$Component) {
     _this.state = {
       content: "Review submitted auction bids",
       showSelectedBids: false,
-      showModal: false
+      error: null
     };
     _this.toggleBids = _this.toggleBids.bind(_this);
     _this.handleSelectBtn = _this.handleSelectBtn.bind(_this);
-    _this.setShowModal = _this.setShowModal.bind(_this);
     return _this;
   }
   _inherits(AllAuctionBids, _React$Component);
   return _createClass(AllAuctionBids, [{
-    key: "setShowModal",
-    value: function setShowModal(show) {
-      this.setState({
-        showModal: show
-      });
-    }
-  }, {
     key: "loadFromServer",
     value: function loadFromServer() {
       this.props.dispatch(getAllAuctionBids());
@@ -91686,28 +91703,31 @@ var AllAuctionBids = /*#__PURE__*/function (_React$Component) {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              if (!window.ethereum) {
-                _context.next = 7;
-                break;
-              }
+              _context.prev = 0;
               _context.next = 3;
-              return setBuyerCCProjectListing(projectAddress, buyerAddress);
+              return setBuyer(projectAddress, buyerAddress);
             case 3:
               _context.next = 5;
-              return redistributeCCProjectListing(projectAddress);
+              return redistribute(projectAddress);
             case 5:
-              _context.next = 9;
-              break;
-            case 7:
-              this.setShowModal(true);
-              throw "Unable to set the selected buyer";
-            case 9:
               this.props.dispatch(selectAuctionBid(id));
-            case 10:
+              this.setState({
+                error: null
+              });
+              _context.next = 13;
+              break;
+            case 9:
+              _context.prev = 9;
+              _context.t0 = _context["catch"](0);
+              console.error("Error setting buyer and redistributing:", _context.t0);
+              this.setState({
+                error: _context.t0.message || "Unable to set the selected buyer"
+              });
+            case 13:
             case "end":
               return _context.stop();
           }
-        }, _callee, this);
+        }, _callee, this, [[0, 9]]);
       }));
       function handleSelectBtn(_x, _x2, _x3) {
         return _handleSelectBtn.apply(this, arguments);
@@ -91735,12 +91755,12 @@ var AllAuctionBids = /*#__PURE__*/function (_React$Component) {
       });
       return /*#__PURE__*/React.createElement("div", {
         className: "container"
-      }, /*#__PURE__*/React.createElement(MetaConnectModal, {
-        setShowModal: this.setShowModal,
-        showModal: this.state.showModal
-      }), /*#__PURE__*/React.createElement("div", {
+      }, /*#__PURE__*/React.createElement("div", {
         className: "header"
-      }, /*#__PURE__*/React.createElement("h3", null, this.state.content)), /*#__PURE__*/React.createElement("div", {
+      }, /*#__PURE__*/React.createElement("h3", null, this.state.content)), this.state.error && /*#__PURE__*/React.createElement("div", {
+        className: "alert alert-danger",
+        role: "alert"
+      }, this.state.error), /*#__PURE__*/React.createElement("div", {
         className: "mb-2"
       }, /*#__PURE__*/React.createElement(Button, {
         variant: "primary",
@@ -91862,9 +91882,17 @@ var _require = __webpack_require__(/*! react-redux */ "./node_modules/react-redu
   connect = _require.connect;
 var _require2 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js"),
   Button = _require2.Button;
-var MetaConnectModal = __webpack_require__(/*! ../../components/web3/MetaConnectModal */ "./src/main/js/components/web3/MetaConnectModal.js");
-var _require3 = __webpack_require__(/*! ../../utils/web3Utils */ "./src/main/js/utils/web3Utils.js"),
-  setRestorerCCProjectListing = _require3.setRestorerCCProjectListing;
+var _require3 = __webpack_require__(/*! ../../utils/blockchainAPI */ "./src/main/js/utils/blockchainAPI.js"),
+  setRestorer = _require3.setRestorer;
+
+// Helper function to append zeros (convert to wei)
+var appendZeros = function appendZeros(amount, count) {
+  amount = amount.toString();
+  for (var i = 0; i < count; i++) {
+    amount = amount + "0";
+  }
+  return amount;
+};
 var Modal = __webpack_require__(/*! ../../components/common/Modal */ "./src/main/js/components/common/Modal.js");
 var _require4 = __webpack_require__(/*! ../../actions/BidListings */ "./src/main/js/actions/BidListings.js"),
   getAllBids = _require4.getAllBids,
@@ -91877,11 +91905,10 @@ var AllBids = /*#__PURE__*/function (_React$Component) {
     _this.state = {
       content: "Review submitted restoration bids",
       showSelectedBids: false,
-      showModal: false
+      error: null
     };
     _this.toggleBids = _this.toggleBids.bind(_this);
     _this.handleSelectBtn = _this.handleSelectBtn.bind(_this);
-    _this.setShowModal = _this.setShowModal.bind(_this);
     return _this;
   }
   _inherits(AllBids, _React$Component);
@@ -91905,29 +91932,34 @@ var AllBids = /*#__PURE__*/function (_React$Component) {
     key: "handleSelectBtn",
     value: function () {
       var _handleSelectBtn = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(id, biddingPrice, restorerAddress, projectAddress) {
+        var fundingGoalWei;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              if (!window.ethereum) {
-                _context.next = 6;
-                break;
-              }
-              console.log(biddingPrice, restorerAddress, projectAddress);
+              _context.prev = 0;
+              // Convert bidding price to wei (18 decimals) - smart contract expects funding goal in wei
+              fundingGoalWei = appendZeros(biddingPrice, 18);
               _context.next = 4;
-              return setRestorerCCProjectListing(projectAddress, restorerAddress, biddingPrice);
+              return setRestorer(projectAddress, restorerAddress, fundingGoalWei);
             case 4:
-              _context.next = 8;
-              break;
-            case 6:
-              this.setShowModal(true);
-              throw "Unable to set the selected restorer";
-            case 8:
               this.props.dispatch(selectBid(id));
-            case 9:
+              this.setState({
+                error: null
+              });
+              _context.next = 12;
+              break;
+            case 8:
+              _context.prev = 8;
+              _context.t0 = _context["catch"](0);
+              console.error("Error setting restorer:", _context.t0);
+              this.setState({
+                error: _context.t0.message || "Unable to set the selected restorer"
+              });
+            case 12:
             case "end":
               return _context.stop();
           }
-        }, _callee, this);
+        }, _callee, this, [[0, 8]]);
       }));
       function handleSelectBtn(_x, _x2, _x3, _x4) {
         return _handleSelectBtn.apply(this, arguments);
@@ -91938,13 +91970,6 @@ var AllBids = /*#__PURE__*/function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       this.loadFromServer();
-    }
-  }, {
-    key: "setShowModal",
-    value: function setShowModal(show) {
-      this.setState({
-        showModal: show
-      });
     }
   }, {
     key: "render",
@@ -91962,12 +91987,12 @@ var AllBids = /*#__PURE__*/function (_React$Component) {
       });
       return /*#__PURE__*/React.createElement("div", {
         className: "container"
-      }, /*#__PURE__*/React.createElement(MetaConnectModal, {
-        showModal: this.state.showModal,
-        setShowModal: this.setShowModal
-      }), /*#__PURE__*/React.createElement("div", {
+      }, /*#__PURE__*/React.createElement("div", {
         className: "header"
-      }, /*#__PURE__*/React.createElement("h3", null, this.state.content)), /*#__PURE__*/React.createElement("div", {
+      }, /*#__PURE__*/React.createElement("h3", null, this.state.content)), this.state.error && /*#__PURE__*/React.createElement("div", {
+        className: "alert alert-danger",
+        role: "alert"
+      }, this.state.error), /*#__PURE__*/React.createElement("div", {
         className: "mb-2"
       }, /*#__PURE__*/React.createElement(Button, {
         variant: "primary",
@@ -92100,12 +92125,20 @@ var PostItemForSale = __webpack_require__(/*! ../../components/admin/PostItemFor
 var StartAuction = __webpack_require__(/*! ../../components/admin/StartAuction */ "./src/main/js/components/admin/StartAuction.js");
 var AssignRestoration = __webpack_require__(/*! ../../components/admin/AssignRestoration */ "./src/main/js/components/admin/AssignRestoration.js");
 var ProjectListingStatus = __webpack_require__(/*! ../../components/common/ProjectListingStatus */ "./src/main/js/components/common/ProjectListingStatus.js");
-var MetaConnectModal = __webpack_require__(/*! ../../components/web3/MetaConnectModal */ "./src/main/js/components/web3/MetaConnectModal.js");
-var _require5 = __webpack_require__(/*! ../../utils/web3Utils */ "./src/main/js/utils/web3Utils.js"),
-  approveCCProjectListing = _require5.approveCCProjectListing,
-  saveEstCCProjectListing = _require5.saveEstCCProjectListing,
-  assignRestorationCCProjectListing = _require5.assignRestorationCCProjectListing,
-  openAuctionCCProjectListing = _require5.openAuctionCCProjectListing;
+
+// Helper function to append zeros (convert to wei)
+var appendZeros = function appendZeros(amount, count) {
+  amount = amount.toString();
+  for (var i = 0; i < count; i++) {
+    amount = amount + "0";
+  }
+  return amount;
+};
+var _require5 = __webpack_require__(/*! ../../utils/blockchainAPI */ "./src/main/js/utils/blockchainAPI.js"),
+  approveProject = _require5.approveProject,
+  saveEstimations = _require5.saveEstimations,
+  assignRestorationBlockchain = _require5.assignRestoration,
+  openAuction = _require5.openAuction;
 function ProjectListingDetails(_ref) {
   var projectListings = _ref.projectListings,
     dispatch = _ref.dispatch;
@@ -92114,10 +92147,10 @@ function ProjectListingDetails(_ref) {
   var listing = projectListings.find(function (p) {
     return p.id === parseInt(id);
   });
-  var _useState = useState(false),
+  var _useState = useState(null),
     _useState2 = _slicedToArray(_useState, 2),
-    showModal = _useState2[0],
-    setShowModal = _useState2[1];
+    error = _useState2[0],
+    setError = _useState2[1];
   var fetchFile = function fetchFile() {
     http().get("".concat(config.uploadsUrl).concat(listing.file.path), {
       responseType: "blob"
@@ -92141,28 +92174,29 @@ function ProjectListingDetails(_ref) {
   };
   var onSubmitEstimationsHandler = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(valueEstimation, repairCost) {
+      var valueEstWei, repairCostWei;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
-            if (!window.ethereum) {
-              _context.next = 5;
-              break;
-            }
-            _context.next = 3;
-            return saveEstCCProjectListing(listing.projectAddress, valueEstimation, repairCost);
-          case 3:
-            _context.next = 7;
-            break;
+            _context.prev = 0;
+            // Convert to wei (18 decimals) - smart contract expects values in wei
+            valueEstWei = appendZeros(valueEstimation, 18);
+            repairCostWei = appendZeros(repairCost, 18);
+            _context.next = 5;
+            return saveEstimations(listing.projectAddress, valueEstWei, repairCostWei);
           case 5:
-            setShowModal(true);
-            throw "Unable to update estimations in smart contract";
-          case 7:
             return _context.abrupt("return", onSubmitEstimations(valueEstimation, repairCost));
           case 8:
+            _context.prev = 8;
+            _context.t0 = _context["catch"](0);
+            console.error("Error saving estimations:", _context.t0);
+            setError(_context.t0.message || "Unable to update estimations in smart contract");
+            throw _context.t0;
+          case 13:
           case "end":
             return _context.stop();
         }
-      }, _callee);
+      }, _callee, null, [[0, 8]]);
     }));
     return function onSubmitEstimationsHandler(_x, _x2) {
       return _ref3.apply(this, arguments);
@@ -92173,25 +92207,22 @@ function ProjectListingDetails(_ref) {
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
-            if (!window.ethereum) {
-              _context2.next = 5;
-              break;
-            }
+            _context2.prev = 0;
             _context2.next = 3;
-            return assignRestorationCCProjectListing(listing.projectAddress);
+            return assignRestorationBlockchain(listing.projectAddress);
           case 3:
-            _context2.next = 7;
-            break;
-          case 5:
-            setShowModal(true);
-            throw "Unable to assign restoration in smart contract";
-          case 7:
             return _context2.abrupt("return", dispatch(assignRestoration(id)));
-          case 8:
+          case 6:
+            _context2.prev = 6;
+            _context2.t0 = _context2["catch"](0);
+            console.error("Error assigning restoration:", _context2.t0);
+            setError(_context2.t0.message || "Unable to assign restoration in smart contract");
+            throw _context2.t0;
+          case 11:
           case "end":
             return _context2.stop();
         }
-      }, _callee2);
+      }, _callee2, null, [[0, 6]]);
     }));
     return function onAssignRestoration() {
       return _ref4.apply(this, arguments);
@@ -92205,25 +92236,22 @@ function ProjectListingDetails(_ref) {
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            if (!window.ethereum) {
-              _context3.next = 5;
-              break;
-            }
+            _context3.prev = 0;
             _context3.next = 3;
-            return openAuctionCCProjectListing(listing.projectAddress);
+            return openAuction(listing.projectAddress);
           case 3:
-            _context3.next = 7;
-            break;
-          case 5:
-            setShowModal(true);
-            throw "Unable to start auction in smart contract";
-          case 7:
             return _context3.abrupt("return", dispatch(startAuction(id)));
-          case 8:
+          case 6:
+            _context3.prev = 6;
+            _context3.t0 = _context3["catch"](0);
+            console.error("Error starting auction:", _context3.t0);
+            setError(_context3.t0.message || "Unable to start auction in smart contract");
+            throw _context3.t0;
+          case 11:
           case "end":
             return _context3.stop();
         }
-      }, _callee3);
+      }, _callee3, null, [[0, 6]]);
     }));
     return function onStartAuction() {
       return _ref5.apply(this, arguments);
@@ -92244,25 +92272,22 @@ function ProjectListingDetails(_ref) {
         while (1) switch (_context4.prev = _context4.next) {
           case 0:
             message = _args4.length > 2 && _args4[2] !== undefined ? _args4[2] : null;
-            if (!window.ethereum) {
-              _context4.next = 6;
-              break;
-            }
+            _context4.prev = 1;
             _context4.next = 4;
-            return approveCCProjectListing(listing.projectAddress);
+            return approveProject(listing.projectAddress);
           case 4:
-            _context4.next = 8;
-            break;
-          case 6:
-            setShowModal(true);
-            throw "Unable to update approval in smart contract";
-          case 8:
             return _context4.abrupt("return", onSubmitApproval(areDetailsVerified, isTitleReceived, message));
-          case 9:
+          case 7:
+            _context4.prev = 7;
+            _context4.t0 = _context4["catch"](1);
+            console.error("Error approving project:", _context4.t0);
+            setError(_context4.t0.message || "Unable to update approval in smart contract");
+            throw _context4.t0;
+          case 12:
           case "end":
             return _context4.stop();
         }
-      }, _callee4);
+      }, _callee4, null, [[1, 7]]);
     }));
     return function onSubmitApprovalHandler(_x3, _x4) {
       return _ref6.apply(this, arguments);
@@ -92282,17 +92307,31 @@ function ProjectListingDetails(_ref) {
   var canApprove = listing.pendingTasks.includes("Verify Details") || listing.pendingTasks.includes("Receive Title");
   return /*#__PURE__*/React.createElement("div", {
     className: "container project-details-page"
-  }, /*#__PURE__*/React.createElement(MetaConnectModal, {
-    setShowModal: setShowModal,
-    showModal: showModal
-  }), /*#__PURE__*/React.createElement("h3", null, "Project Details"), /*#__PURE__*/React.createElement("div", {
-    className: "my-1"
+  }, /*#__PURE__*/React.createElement("h3", null, "Project Details"), error && /*#__PURE__*/React.createElement("div", {
+    className: "alert alert-danger",
+    role: "alert"
+  }, error), /*#__PURE__*/React.createElement("div", {
+    className: "my-3"
   }, /*#__PURE__*/React.createElement(ProjectListingStatus, {
     listing: listing
-  })), /*#__PURE__*/React.createElement("div", null, listing.make, " ", listing.model), /*#__PURE__*/React.createElement("div", null, "CCPG: ", listing.ccpg), /*#__PURE__*/React.createElement("div", null, "VIN: ", listing.vin), /*#__PURE__*/React.createElement("div", null, "Initial funding requested: ", listing.fundingGoal), listing.description && /*#__PURE__*/React.createElement("div", null, "Description: ", listing.description), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-link p-0",
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "Vehicle: "), listing.make, " ", listing.model), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "CCPG: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-primary"
+  }, listing.ccpg)), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "VIN: "), listing.vin), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "Initial funding requested: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-success fw-bold"
+  }, listing.fundingGoal)), listing.description && /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "Description: "), listing.description), /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-outline-primary mt-2",
     onClick: fetchFile
-  }, "Proof of ownership"), /*#__PURE__*/React.createElement(Approve, {
+  }, "\uD83D\uDCC4 View Proof of Ownership"), /*#__PURE__*/React.createElement(Approve, {
     listing: listing,
     isEditable: canApprove,
     onSave: onSubmitApprovalHandler,
@@ -92847,37 +92886,58 @@ var ProjectListingInvestor = function ProjectListingInvestor(_ref) {
     currFundingAmount = projectListing.currFundingAmount,
     vin = projectListing.vin;
   return /*#__PURE__*/React.createElement("div", {
-    className: "card mt-2"
+    className: "card"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "card-header"
+  }, /*#__PURE__*/React.createElement("h5", {
+    className: "mb-0"
+  }, make, " ", model)), /*#__PURE__*/React.createElement("div", {
     className: "card-body"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "card-title"
-  }, /*#__PURE__*/React.createElement("h5", null, make, " ", model), /*#__PURE__*/React.createElement("div", {
-    className: "text-small"
-  }, "VIN: ", vin)), /*#__PURE__*/React.createElement("div", {
-    className: "card-text"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "CCPG: "), ccpg), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "Initial Funding Goal: "), fundingGoal), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("strong", null, "Current Funding Required: "), fundingGoal - currFundingAmount)), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(MetaConnectModal, {
+    className: "text-small mb-3",
+    style: {
+      color: '#718096'
+    }
+  }, "VIN: ", vin), /*#__PURE__*/React.createElement("div", {
+    className: "card-text mb-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "CCPG: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-primary"
+  }, ccpg)), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "Initial Funding Goal: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-primary"
+  }, fundingGoal)), /*#__PURE__*/React.createElement("div", {
+    className: "mb-2"
+  }, /*#__PURE__*/React.createElement("strong", null, "Current Funding Required: "), /*#__PURE__*/React.createElement("span", {
+    className: "text-success fw-bold"
+  }, fundingGoal - currFundingAmount))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(MetaConnectModal, {
     setShowModal: setShowModal,
     showModal: showModal
-  }), /*#__PURE__*/React.createElement(Form, null, /*#__PURE__*/React.createElement(Form.Group, null, /*#__PURE__*/React.createElement(Form.Label, {
-    htmlFor: "amount"
-  }, "Amount:"), /*#__PURE__*/React.createElement(Form.Control, {
+  }), /*#__PURE__*/React.createElement(Form, null, /*#__PURE__*/React.createElement(Form.Group, {
+    className: "mb-3"
+  }, /*#__PURE__*/React.createElement(Form.Label, {
+    htmlFor: "amount",
+    className: "fw-semibold"
+  }, "Investment Amount:"), /*#__PURE__*/React.createElement(Form.Control, {
     required: true,
     id: "amount-box",
-    placeholder: "Investment amount",
-    type: "input",
+    placeholder: "Enter amount to invest",
+    type: "number",
     value: amount,
     onChange: function onChange(e) {
       return setAmount(e.target.value);
-    }
+    },
+    className: "mb-3"
   })), /*#__PURE__*/React.createElement("button", {
-    className: "btn btn-link p-0",
+    className: "btn btn-primary w-100",
     onClick: createInvestment
-  }, "Invest")))), status && /*#__PURE__*/React.createElement("div", {
-    className: "d-inline-block mt-2 p-2 alert alert-success"
+  }, "Invest Now"))), status && /*#__PURE__*/React.createElement("div", {
+    className: "alert alert-success mt-3 mb-0"
   }, status), error && /*#__PURE__*/React.createElement("div", {
-    className: "d-inline-block mt-2 p-2 alert alert-danger"
-  }, error));
+    className: "alert alert-danger mt-3 mb-0"
+  }, error)));
 };
 var mapStateToProps = function mapStateToProps(state) {
   return {
@@ -93045,12 +93105,12 @@ var _require2 = __webpack_require__(/*! react-redux */ "./node_modules/react-red
   connect = _require2.connect;
 var _require3 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js"),
   Container = _require3.Container;
-var MetaConnectModal = __webpack_require__(/*! ../../components/web3/MetaConnectModal */ "./src/main/js/components/web3/MetaConnectModal.js");
-var _require4 = __webpack_require__(/*! ../../utils/web3Utils */ "./src/main/js/utils/web3Utils.js"),
-  getWalletAddress = _require4.getWalletAddress,
-  createCCProjectContract = _require4.createCCProjectContract;
-var _require5 = __webpack_require__(/*! ../../actions/ProjectListings */ "./src/main/js/actions/ProjectListings.js"),
-  createProjectListingByUserID = _require5.createProjectListingByUserID;
+var _require4 = __webpack_require__(/*! ../../utils/blockchainAPI */ "./src/main/js/utils/blockchainAPI.js"),
+  createProjectContract = _require4.createProjectContract;
+var _require5 = __webpack_require__(/*! ../../utils/web3Utils */ "./src/main/js/utils/web3Utils.js"),
+  getWalletAddress = _require5.getWalletAddress;
+var _require6 = __webpack_require__(/*! ../../actions/ProjectListings */ "./src/main/js/actions/ProjectListings.js"),
+  createProjectListingByUserID = _require6.createProjectListingByUserID;
 var ProjectListingForm = __webpack_require__(/*! ./ProjectListingForm */ "./src/main/js/pages/owner/ProjectListingForm.js");
 var NewProjectListing = function NewProjectListing(_ref) {
   var user = _ref.user,
@@ -93063,10 +93123,13 @@ var NewProjectListing = function NewProjectListing(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     error = _useState4[0],
     setError = _useState4[1];
-  var _useState5 = useState(false),
-    _useState6 = _slicedToArray(_useState5, 2),
-    showModal = _useState6[0],
-    setShowModal = _useState6[1];
+  var appendZeros = function appendZeros(amount, count) {
+    amount = amount.toString();
+    for (var i = 0; i < count; i++) {
+      amount = amount + "0";
+    }
+    return amount;
+  };
   var createProjectListing = function createProjectListing(formData) {
     dispatch(createProjectListingByUserID(user.id, formData)).then(function () {
       setError();
@@ -93078,36 +93141,59 @@ var NewProjectListing = function NewProjectListing(_ref) {
   };
   var createProjectListingHandler = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(formData) {
-      var walletAddress, projectAddress;
+      var walletAddress, listing, vinNumber, make, model, ccpg, fundingGoal, projectAddress;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
+            _context.prev = 0;
             if (!window.ethereum) {
-              _context.next = 12;
+              _context.next = 7;
               break;
             }
-            _context.next = 3;
+            _context.next = 4;
             return getWalletAddress();
-          case 3:
+          case 4:
             walletAddress = _context.sent;
-            formData.append("walletAddress", walletAddress);
-            _context.next = 7;
-            return createCCProjectContract(formData);
+            _context.next = 9;
+            break;
           case 7:
+            setError("MetaMask is required to get your wallet address. Please install MetaMask.");
+            return _context.abrupt("return");
+          case 9:
+            // Parse form data
+            listing = JSON.parse(formData.get("listing"));
+            vinNumber = listing.vin;
+            make = listing.make;
+            model = listing.model;
+            ccpg = appendZeros(listing.ccpg, 18);
+            fundingGoal = appendZeros(listing.fundingGoal, 18); // Create project contract via backend API
+            _context.next = 17;
+            return createProjectContract({
+              vin: vinNumber,
+              make: make,
+              model: model,
+              ccpg: ccpg,
+              fundingGoal: fundingGoal,
+              ownerAddress: walletAddress
+            });
+          case 17:
             projectAddress = _context.sent;
+            // Add to form data and save to database
+            formData.append("walletAddress", walletAddress);
             formData.append("projectAddress", projectAddress);
             createProjectListing(formData);
-            _context.next = 15;
+            _context.next = 27;
             break;
-          case 12:
-            setShowModal(true);
-            setError("Unable to create Project Listing contract");
-            throw "Unable to create Project Listing contract";
-          case 15:
+          case 23:
+            _context.prev = 23;
+            _context.t0 = _context["catch"](0);
+            console.error("Error creating project:", _context.t0);
+            setError(_context.t0.message || "Unable to create Project Listing contract");
+          case 27:
           case "end":
             return _context.stop();
         }
-      }, _callee);
+      }, _callee, null, [[0, 23]]);
     }));
     return function createProjectListingHandler(_x) {
       return _ref2.apply(this, arguments);
@@ -93116,18 +93202,21 @@ var NewProjectListing = function NewProjectListing(_ref) {
   var onError = function onError(msg) {
     return setError(msg);
   };
-  return /*#__PURE__*/React.createElement(Container, null, /*#__PURE__*/React.createElement(MetaConnectModal, {
-    showModal: showModal,
-    setShowModal: setShowModal
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "my-3"
-  }, /*#__PURE__*/React.createElement("h3", null, "Create New Project Listing")), /*#__PURE__*/React.createElement(ProjectListingForm, {
+  return /*#__PURE__*/React.createElement(Container, null, /*#__PURE__*/React.createElement("div", {
+    className: "my-4"
+  }, /*#__PURE__*/React.createElement("h3", null, "Create New Project Listing"), /*#__PURE__*/React.createElement("p", {
+    className: "text-muted"
+  }, "Submit your vehicle project to start the restoration process")), /*#__PURE__*/React.createElement("div", {
+    className: "card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card-body"
+  }, /*#__PURE__*/React.createElement(ProjectListingForm, {
     onSubmit: createProjectListingHandler,
     onError: onError
-  }), status && /*#__PURE__*/React.createElement("div", {
-    className: "d-inline-block mt-2 p-2 alert alert-success"
+  }))), status && /*#__PURE__*/React.createElement("div", {
+    className: "alert alert-success mt-3"
   }, status), error && /*#__PURE__*/React.createElement("div", {
-    className: "d-inline-block mt-2 p-2 alert alert-danger"
+    className: "alert alert-danger mt-3"
   }, error));
 };
 var mapStateToProps = function mapStateToProps(state) {
@@ -93203,8 +93292,12 @@ function Portfolio(_ref) {
     dispatch(deleteProjectById(id));
   };
   var renderBody = function renderBody() {
-    if (isLoading) return /*#__PURE__*/React.createElement("div", null, "Loading....");
-    if (error) return /*#__PURE__*/React.createElement("div", null, error);
+    if (isLoading) return /*#__PURE__*/React.createElement("div", {
+      className: "loading-state"
+    }, "Loading portfolio...");
+    if (error) return /*#__PURE__*/React.createElement("div", {
+      className: "error-state"
+    }, "Error: ", error);
     return /*#__PURE__*/React.createElement(ProjectListingsList, {
       onRemove: onRemove,
       projectListings: listings
@@ -93213,8 +93306,10 @@ function Portfolio(_ref) {
   return /*#__PURE__*/React.createElement("div", {
     className: "container"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "page-title my-3"
-  }, /*#__PURE__*/React.createElement("h3", null, "My Portfolio")), renderBody());
+    className: "page-title my-4"
+  }, /*#__PURE__*/React.createElement("h3", null, "My Portfolio"), /*#__PURE__*/React.createElement("p", {
+    className: "text-muted"
+  }, "Manage your vehicle restoration projects")), renderBody());
 }
 function mapStateToProps(_ref2) {
   var auth = _ref2.auth,
@@ -94526,6 +94621,375 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./src/main/js/utils/blockchainAPI.js":
+/*!********************************************!*\
+  !*** ./src/main/js/utils/blockchainAPI.js ***!
+  \********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+var createBaseRequest = __webpack_require__(/*! ../common/http-common */ "./src/main/js/common/http-common.js");
+
+/**
+ * Backend Blockchain API Service
+ * 
+ * This service replaces the old web3Utils.js functions for admin operations.
+ * All blockchain operations are now handled by the backend.
+ * No MetaMask required for admin operations.
+ */
+
+/**
+ * Create a new project contract on the blockchain
+ * @param {Object} projectData - Project data with vin, make, model, ccpg, fundingGoal, ownerAddress
+ * @returns {Promise<string>} Project contract address
+ */
+var createProjectContract = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(projectData) {
+    var response, _error$response;
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _context.prev = 0;
+          _context.next = 3;
+          return createBaseRequest().post("/blockchain/admin/create-project", {
+            vin: projectData.vin,
+            make: projectData.make,
+            model: projectData.model,
+            ccpg: projectData.ccpg,
+            fundingGoal: projectData.fundingGoal,
+            ownerAddress: projectData.ownerAddress
+          });
+        case 3:
+          response = _context.sent;
+          return _context.abrupt("return", response.data);
+        case 7:
+          _context.prev = 7;
+          _context.t0 = _context["catch"](0);
+          console.error("Error creating project contract:", _context.t0);
+          throw new Error(((_error$response = _context.t0.response) === null || _error$response === void 0 ? void 0 : _error$response.data) || "Failed to create project contract");
+        case 11:
+        case "end":
+          return _context.stop();
+      }
+    }, _callee, null, [[0, 7]]);
+  }));
+  return function createProjectContract(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+/**
+ * Approve a project on the blockchain
+ * @param {string} projectAddress - The project contract address
+ */
+var approveProject = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(projectAddress) {
+    var _error$response2, errorMsg;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          _context2.next = 3;
+          return createBaseRequest().post("/blockchain/admin/approve-project", null, {
+            params: {
+              projectAddress: projectAddress
+            }
+          });
+        case 3:
+          _context2.next = 10;
+          break;
+        case 5:
+          _context2.prev = 5;
+          _context2.t0 = _context2["catch"](0);
+          console.error("Error approving project:", _context2.t0);
+          errorMsg = ((_error$response2 = _context2.t0.response) === null || _error$response2 === void 0 ? void 0 : _error$response2.data) || _context2.t0.message || "Failed to approve project";
+          throw new Error(errorMsg);
+        case 10:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[0, 5]]);
+  }));
+  return function approveProject(_x2) {
+    return _ref2.apply(this, arguments);
+  };
+}();
+
+/**
+ * Save estimations for a project
+ * @param {string} projectAddress - The project contract address
+ * @param {string} valueEst - Value estimate (as string)
+ * @param {string} repairEst - Repair cost estimate (as string)
+ */
+var saveEstimations = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(projectAddress, valueEst, repairEst) {
+    var _error$response3;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          _context3.next = 3;
+          return createBaseRequest().post("/blockchain/admin/save-estimations", null, {
+            params: {
+              projectAddress: projectAddress,
+              valueEst: valueEst,
+              repairEst: repairEst
+            }
+          });
+        case 3:
+          _context3.next = 9;
+          break;
+        case 5:
+          _context3.prev = 5;
+          _context3.t0 = _context3["catch"](0);
+          console.error("Error saving estimations:", _context3.t0);
+          throw new Error(((_error$response3 = _context3.t0.response) === null || _error$response3 === void 0 ? void 0 : _error$response3.data) || "Failed to save estimations");
+        case 9:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3, null, [[0, 5]]);
+  }));
+  return function saveEstimations(_x3, _x4, _x5) {
+    return _ref3.apply(this, arguments);
+  };
+}();
+
+/**
+ * Set restorer for a project
+ * @param {string} projectAddress - The project contract address
+ * @param {string} restorerAddress - The restorer's Ethereum address
+ * @param {string} fundingGoal - The funding goal (as string)
+ */
+var setRestorer = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(projectAddress, restorerAddress, fundingGoal) {
+    var _error$response4;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.prev = 0;
+          _context4.next = 3;
+          return createBaseRequest().post("/blockchain/admin/set-restorer", null, {
+            params: {
+              projectAddress: projectAddress,
+              restorerAddress: restorerAddress,
+              fundingGoal: fundingGoal
+            }
+          });
+        case 3:
+          _context4.next = 9;
+          break;
+        case 5:
+          _context4.prev = 5;
+          _context4.t0 = _context4["catch"](0);
+          console.error("Error setting restorer:", _context4.t0);
+          throw new Error(((_error$response4 = _context4.t0.response) === null || _error$response4 === void 0 ? void 0 : _error$response4.data) || "Failed to set restorer");
+        case 9:
+        case "end":
+          return _context4.stop();
+      }
+    }, _callee4, null, [[0, 5]]);
+  }));
+  return function setRestorer(_x6, _x7, _x8) {
+    return _ref4.apply(this, arguments);
+  };
+}();
+
+/**
+ * Assign restoration for a project
+ * @param {string} projectAddress - The project contract address
+ */
+var assignRestoration = /*#__PURE__*/function () {
+  var _ref5 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(projectAddress) {
+    var _error$response5;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.prev = 0;
+          _context5.next = 3;
+          return createBaseRequest().post("/blockchain/admin/assign-restoration", null, {
+            params: {
+              projectAddress: projectAddress
+            }
+          });
+        case 3:
+          _context5.next = 9;
+          break;
+        case 5:
+          _context5.prev = 5;
+          _context5.t0 = _context5["catch"](0);
+          console.error("Error assigning restoration:", _context5.t0);
+          throw new Error(((_error$response5 = _context5.t0.response) === null || _error$response5 === void 0 ? void 0 : _error$response5.data) || "Failed to assign restoration");
+        case 9:
+        case "end":
+          return _context5.stop();
+      }
+    }, _callee5, null, [[0, 5]]);
+  }));
+  return function assignRestoration(_x9) {
+    return _ref5.apply(this, arguments);
+  };
+}();
+
+/**
+ * Open auction for a project
+ * @param {string} projectAddress - The project contract address
+ */
+var openAuction = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(projectAddress) {
+    var _error$response6;
+    return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+      while (1) switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.prev = 0;
+          _context6.next = 3;
+          return createBaseRequest().post("/blockchain/admin/open-auction", null, {
+            params: {
+              projectAddress: projectAddress
+            }
+          });
+        case 3:
+          _context6.next = 9;
+          break;
+        case 5:
+          _context6.prev = 5;
+          _context6.t0 = _context6["catch"](0);
+          console.error("Error opening auction:", _context6.t0);
+          throw new Error(((_error$response6 = _context6.t0.response) === null || _error$response6 === void 0 ? void 0 : _error$response6.data) || "Failed to open auction");
+        case 9:
+        case "end":
+          return _context6.stop();
+      }
+    }, _callee6, null, [[0, 5]]);
+  }));
+  return function openAuction(_x10) {
+    return _ref6.apply(this, arguments);
+  };
+}();
+
+/**
+ * Set buyer for a project
+ * @param {string} projectAddress - The project contract address
+ * @param {string} buyerAddress - The buyer's Ethereum address
+ */
+var setBuyer = /*#__PURE__*/function () {
+  var _ref7 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(projectAddress, buyerAddress) {
+    var _error$response7;
+    return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+      while (1) switch (_context7.prev = _context7.next) {
+        case 0:
+          _context7.prev = 0;
+          _context7.next = 3;
+          return createBaseRequest().post("/blockchain/admin/set-buyer", null, {
+            params: {
+              projectAddress: projectAddress,
+              buyerAddress: buyerAddress
+            }
+          });
+        case 3:
+          _context7.next = 9;
+          break;
+        case 5:
+          _context7.prev = 5;
+          _context7.t0 = _context7["catch"](0);
+          console.error("Error setting buyer:", _context7.t0);
+          throw new Error(((_error$response7 = _context7.t0.response) === null || _error$response7 === void 0 ? void 0 : _error$response7.data) || "Failed to set buyer");
+        case 9:
+        case "end":
+          return _context7.stop();
+      }
+    }, _callee7, null, [[0, 5]]);
+  }));
+  return function setBuyer(_x11, _x12) {
+    return _ref7.apply(this, arguments);
+  };
+}();
+
+/**
+ * Redistribute funds for a project
+ * @param {string} projectAddress - The project contract address
+ */
+var redistribute = /*#__PURE__*/function () {
+  var _ref8 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(projectAddress) {
+    var _error$response8;
+    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      while (1) switch (_context8.prev = _context8.next) {
+        case 0:
+          _context8.prev = 0;
+          _context8.next = 3;
+          return createBaseRequest().post("/blockchain/admin/redistribute", null, {
+            params: {
+              projectAddress: projectAddress
+            }
+          });
+        case 3:
+          _context8.next = 9;
+          break;
+        case 5:
+          _context8.prev = 5;
+          _context8.t0 = _context8["catch"](0);
+          console.error("Error redistributing:", _context8.t0);
+          throw new Error(((_error$response8 = _context8.t0.response) === null || _error$response8 === void 0 ? void 0 : _error$response8.data) || "Failed to redistribute");
+        case 9:
+        case "end":
+          return _context8.stop();
+      }
+    }, _callee8, null, [[0, 5]]);
+  }));
+  return function redistribute(_x13) {
+    return _ref8.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get token balance for an address
+ * @param {string} address - Ethereum address
+ * @returns {Promise<string>} Token balance
+ */
+var getTokenBalance = /*#__PURE__*/function () {
+  var _ref9 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(address) {
+    var response, _error$response9;
+    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+      while (1) switch (_context9.prev = _context9.next) {
+        case 0:
+          _context9.prev = 0;
+          _context9.next = 3;
+          return createBaseRequest().get("/blockchain/balance/".concat(address));
+        case 3:
+          response = _context9.sent;
+          return _context9.abrupt("return", response.data.toString());
+        case 7:
+          _context9.prev = 7;
+          _context9.t0 = _context9["catch"](0);
+          console.error("Error getting token balance:", _context9.t0);
+          throw new Error(((_error$response9 = _context9.t0.response) === null || _error$response9 === void 0 ? void 0 : _error$response9.data) || "Failed to get token balance");
+        case 11:
+        case "end":
+          return _context9.stop();
+      }
+    }, _callee9, null, [[0, 7]]);
+  }));
+  return function getTokenBalance(_x14) {
+    return _ref9.apply(this, arguments);
+  };
+}();
+module.exports = {
+  createProjectContract: createProjectContract,
+  approveProject: approveProject,
+  saveEstimations: saveEstimations,
+  setRestorer: setRestorer,
+  assignRestoration: assignRestoration,
+  openAuction: openAuction,
+  setBuyer: setBuyer,
+  redistribute: redistribute,
+  getTokenBalance: getTokenBalance
+};
+
+/***/ }),
+
 /***/ "./src/main/js/utils/localStorage.js":
 /*!*******************************************!*\
   !*** ./src/main/js/utils/localStorage.js ***!
@@ -94572,59 +95036,261 @@ function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 var _require = __webpack_require__(/*! ethers */ "./node_modules/ethers/lib.esm/index.js"),
   ethers = _require.ethers;
-var CCTOKEN_ADDRESS = "0xE109d1176B4c7C3Fa53b897C669AA5fB5Ab20a11";
-var FACTORY_ADDRESS = "0x379eae4847bdf385641faefE2a5C5A671A69c997";
+var createBaseRequest = __webpack_require__(/*! ../common/http-common */ "./src/main/js/common/http-common.js");
 var CCTOKEN_ABI = __webpack_require__(/*! ../contracts/abi/CCToken.json */ "./src/main/js/contracts/abi/CCToken.json");
 var FACTORY_ABI = __webpack_require__(/*! ../contracts/abi/CCProjectFactory.json */ "./src/main/js/contracts/abi/CCProjectFactory.json");
 var PROJECT_ABI = __webpack_require__(/*! ../contracts/abi/CCProject.json */ "./src/main/js/contracts/abi/CCProject.json");
-var getCCTokenBalance = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-    var provider, signer, ccTokenContract, walletAddress, decimals, tokens;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
+
+// Contract addresses - loaded dynamically from backend
+var CCTOKEN_ADDRESS = null;
+var FACTORY_ADDRESS = null;
+
+// Cache for contract addresses
+var contractAddressesPromise = null;
+
+/**
+ * Fetch contract addresses from backend API
+ * These are read from application.properties server-side
+ */
+var fetchContractAddresses = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          _context.prev = 0;
-          _context.next = 3;
+          if (!contractAddressesPromise) {
+            _context2.next = 2;
+            break;
+          }
+          return _context2.abrupt("return", contractAddressesPromise);
+        case 2:
+          contractAddressesPromise = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            var response;
+            return _regeneratorRuntime().wrap(function _callee$(_context) {
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  _context.prev = 0;
+                  _context.next = 3;
+                  return createBaseRequest().get("/api/blockchain/config/contracts");
+                case 3:
+                  response = _context.sent;
+                  CCTOKEN_ADDRESS = response.data.tokenAddress;
+                  FACTORY_ADDRESS = response.data.factoryAddress;
+                  console.log("Contract addresses loaded from backend:", {
+                    token: CCTOKEN_ADDRESS,
+                    factory: FACTORY_ADDRESS
+                  });
+                  return _context.abrupt("return", {
+                    token: CCTOKEN_ADDRESS,
+                    factory: FACTORY_ADDRESS
+                  });
+                case 10:
+                  _context.prev = 10;
+                  _context.t0 = _context["catch"](0);
+                  console.error("Error fetching contract addresses from backend:", _context.t0);
+                  // Fallback to hardcoded values if API call fails
+                  CCTOKEN_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+                  FACTORY_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+                  console.warn("Using fallback contract addresses");
+                  return _context.abrupt("return", {
+                    token: CCTOKEN_ADDRESS,
+                    factory: FACTORY_ADDRESS
+                  });
+                case 17:
+                case "end":
+                  return _context.stop();
+              }
+            }, _callee, null, [[0, 10]]);
+          }))();
+          return _context2.abrupt("return", contractAddressesPromise);
+        case 4:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2);
+  }));
+  return function fetchContractAddresses() {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get contract addresses, fetching from backend if not already loaded
+ */
+var getContractAddresses = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          if (!(!CCTOKEN_ADDRESS || !FACTORY_ADDRESS)) {
+            _context3.next = 3;
+            break;
+          }
+          _context3.next = 3;
+          return fetchContractAddresses();
+        case 3:
+          return _context3.abrupt("return", {
+            token: CCTOKEN_ADDRESS,
+            factory: FACTORY_ADDRESS
+          });
+        case 4:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3);
+  }));
+  return function getContractAddresses() {
+    return _ref3.apply(this, arguments);
+  };
+}();
+var getCCTokenBalance = /*#__PURE__*/function () {
+  var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+    var addresses, tokenAddress, chainIdHex, chainId, expectedChainId, newChainIdHex, newChainId, provider, signer, code, ccTokenContract, walletAddress, decimals, tokens, errorMessage;
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.prev = 0;
+          _context4.next = 3;
+          return getContractAddresses();
+        case 3:
+          addresses = _context4.sent;
+          tokenAddress = addresses.token;
+          _context4.next = 7;
           return window.ethereum.request({
             method: "eth_requestAccounts"
           });
-        case 3:
-          _context.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          ccTokenContract = new ethers.Contract(CCTOKEN_ADDRESS, CCTOKEN_ABI, signer);
-          _context.next = 11;
-          return signer.getAddress();
-        case 11:
-          walletAddress = _context.sent;
-          _context.next = 14;
-          return ccTokenContract.decimals();
-        case 14:
-          decimals = _context.sent;
-          _context.next = 17;
-          return ccTokenContract.balanceOf(walletAddress);
+        case 7:
+          _context4.next = 9;
+          return window.ethereum.request({
+            method: "eth_chainId"
+          });
+        case 9:
+          chainIdHex = _context4.sent;
+          chainId = parseInt(chainIdHex, 16);
+          expectedChainId = 31337; // Hardhat local network
+          console.log("MetaMask Chain ID:", chainId, "Expected:", expectedChainId);
+          if (!(chainId !== expectedChainId)) {
+            _context4.next = 43;
+            break;
+          }
+          _context4.prev = 14;
+          _context4.next = 17;
+          return window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{
+              chainId: '0x7A69'
+            }] // 31337 in hex
+          });
         case 17:
-          tokens = _context.sent;
-          _context.next = 20;
-          return ethers.utils.formatEther(tokens, decimals);
-        case 20:
-          return _context.abrupt("return", _context.sent);
-        case 23:
-          _context.prev = 23;
-          _context.t0 = _context["catch"](0);
-          console.log(_context.t0);
-          throw "Web3 Error!";
+          _context4.next = 19;
+          return new Promise(function (resolve) {
+            return setTimeout(resolve, 1000);
+          });
+        case 19:
+          _context4.next = 21;
+          return window.ethereum.request({
+            method: "eth_chainId"
+          });
+        case 21:
+          newChainIdHex = _context4.sent;
+          newChainId = parseInt(newChainIdHex, 16);
+          if (!(newChainId !== expectedChainId)) {
+            _context4.next = 25;
+            break;
+          }
+          throw new Error("Please switch to Hardhat Local network (Chain ID: ".concat(expectedChainId, "). Current network: Chain ID ").concat(newChainId));
+        case 25:
+          _context4.next = 43;
+          break;
         case 27:
+          _context4.prev = 27;
+          _context4.t0 = _context4["catch"](14);
+          if (!(_context4.t0.code === 4902)) {
+            _context4.next = 42;
+            break;
+          }
+          _context4.prev = 30;
+          _context4.next = 33;
+          return window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: '0x7A69',
+              // 31337 in hex
+              chainName: 'Hardhat Local',
+              nativeCurrency: {
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: 18
+              },
+              rpcUrls: ['http://127.0.0.1:8545'],
+              blockExplorerUrls: null
+            }]
+          });
+        case 33:
+          _context4.next = 35;
+          return new Promise(function (resolve) {
+            return setTimeout(resolve, 1000);
+          });
+        case 35:
+          _context4.next = 40;
+          break;
+        case 37:
+          _context4.prev = 37;
+          _context4.t1 = _context4["catch"](30);
+          throw new Error("Please manually switch to Hardhat Local network (Chain ID: ".concat(expectedChainId, "). Current network: Chain ID ").concat(chainId, ". Error: ").concat(_context4.t1.message));
+        case 40:
+          _context4.next = 43;
+          break;
+        case 42:
+          throw new Error("Please switch to Hardhat Local network (Chain ID: ".concat(expectedChainId, "). Current network: Chain ID ").concat(chainId, ". Error: ").concat(_context4.t0.message));
+        case 43:
+          _context4.next = 45;
+          return new ethers.providers.Web3Provider(window.ethereum, "any");
+        case 45:
+          provider = _context4.sent;
+          provider.send("eth_requestAccounts", []);
+          signer = provider.getSigner(); // Check if contract exists at address
+          _context4.next = 50;
+          return provider.getCode(tokenAddress);
+        case 50:
+          code = _context4.sent;
+          if (!(code === "0x" || code === "0x0")) {
+            _context4.next = 53;
+            break;
+          }
+          throw new Error("Token contract not found at address ".concat(tokenAddress, ". Make sure contracts are deployed to Hardhat network."));
+        case 53:
+          ccTokenContract = new ethers.Contract(tokenAddress, CCTOKEN_ABI, signer);
+          _context4.next = 56;
+          return signer.getAddress();
+        case 56:
+          walletAddress = _context4.sent;
+          _context4.next = 59;
+          return ccTokenContract.decimals();
+        case 59:
+          decimals = _context4.sent;
+          _context4.next = 62;
+          return ccTokenContract.balanceOf(walletAddress);
+        case 62:
+          tokens = _context4.sent;
+          _context4.next = 65;
+          return ethers.utils.formatEther(tokens, decimals);
+        case 65:
+          return _context4.abrupt("return", _context4.sent);
+        case 68:
+          _context4.prev = 68;
+          _context4.t2 = _context4["catch"](0);
+          console.error("Error getting token balance:", _context4.t2);
+          // Return a more descriptive error message
+          errorMessage = _context4.t2.message || "Failed to get token balance. Make sure Hardhat node is running and MetaMask is connected to Localhost 8545 (Chain ID: 31337).";
+          throw errorMessage;
+        case 73:
         case "end":
-          return _context.stop();
+          return _context4.stop();
       }
-    }, _callee, null, [[0, 23]]);
+    }, _callee4, null, [[0, 68], [14, 27], [30, 37]]);
   }));
   return function getCCTokenBalance() {
-    return _ref.apply(this, arguments);
+    return _ref4.apply(this, arguments);
   };
 }();
 var appendZeros = function appendZeros(amount, count) {
@@ -94635,162 +95301,8 @@ var appendZeros = function appendZeros(amount, count) {
   return amount;
 };
 var getWalletAddress = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+  var _ref5 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
     var provider, signer;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          _context2.prev = 0;
-          _context2.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 3:
-          _context2.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context2.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          _context2.next = 10;
-          return signer.getAddress();
-        case 10:
-          return _context2.abrupt("return", _context2.sent);
-        case 13:
-          _context2.prev = 13;
-          _context2.t0 = _context2["catch"](0);
-          console.log(_context2.t0);
-          throw "Web3 Error!";
-        case 17:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2, null, [[0, 13]]);
-  }));
-  return function getWalletAddress() {
-    return _ref2.apply(this, arguments);
-  };
-}();
-var approveFunding = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(projectAddress, amount) {
-    var provider, signer, ccTokenContract, tx;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
-        case 0:
-          _context3.prev = 0;
-          _context3.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 3:
-          _context3.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context3.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          ccTokenContract = new ethers.Contract(CCTOKEN_ADDRESS, CCTOKEN_ABI, signer);
-          _context3.next = 11;
-          return ccTokenContract.increaseAllowance(projectAddress, appendZeros(amount, 18));
-        case 11:
-          tx = _context3.sent;
-          _context3.next = 14;
-          return tx.wait();
-        case 14:
-          console.log(tx.hash);
-          _context3.next = 21;
-          break;
-        case 17:
-          _context3.prev = 17;
-          _context3.t0 = _context3["catch"](0);
-          console.log(_context3.t0);
-          throw "Web3 Error!";
-        case 21:
-        case "end":
-          return _context3.stop();
-      }
-    }, _callee3, null, [[0, 17]]);
-  }));
-  return function approveFunding(_x, _x2) {
-    return _ref3.apply(this, arguments);
-  };
-}();
-var createCCProjectContract = /*#__PURE__*/function () {
-  var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(formData) {
-    var provider, signer, factoryContract, ownerAddress, listing, vinNumber, make, model, ccpg, fundingGoal, projectAddresses, projectCount, tx;
-    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-      while (1) switch (_context4.prev = _context4.next) {
-        case 0:
-          _context4.prev = 0;
-          _context4.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 3:
-          _context4.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context4.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-          ownerAddress = formData.get("walletAddress");
-          listing = JSON.parse(formData.get("listing"));
-          vinNumber = listing.vin;
-          make = listing.make;
-          model = listing.model;
-          ccpg = appendZeros(listing.ccpg, 18);
-          fundingGoal = appendZeros(listing.fundingGoal, 18);
-          _context4.next = 18;
-          return factoryContract.getProjects();
-        case 18:
-          projectAddresses = _context4.sent;
-          projectCount = projectAddresses.length;
-          _context4.next = 22;
-          return factoryContract.createNewProject(vinNumber, make, model, ccpg, fundingGoal, ownerAddress);
-        case 22:
-          tx = _context4.sent;
-          _context4.next = 25;
-          return tx.wait();
-        case 25:
-          console.log(tx.hash);
-          _context4.next = 28;
-          return factoryContract.getProjects();
-        case 28:
-          projectAddresses = _context4.sent;
-        case 29:
-          if (!(projectAddresses.length == projectCount)) {
-            _context4.next = 35;
-            break;
-          }
-          _context4.next = 32;
-          return factoryContract.getProjects();
-        case 32:
-          projectAddresses = _context4.sent;
-          _context4.next = 29;
-          break;
-        case 35:
-          projectAddress = projectAddresses[projectAddresses.length - 1];
-          console.log(projectAddress);
-          return _context4.abrupt("return", projectAddress);
-        case 40:
-          _context4.prev = 40;
-          _context4.t0 = _context4["catch"](0);
-          console.log(_context4.t0);
-          throw "Web3 Error!";
-        case 44:
-        case "end":
-          return _context4.stop();
-      }
-    }, _callee4, null, [[0, 40]]);
-  }));
-  return function createCCProjectContract(_x3) {
-    return _ref4.apply(this, arguments);
-  };
-}();
-var approveCCProjectListing = /*#__PURE__*/function () {
-  var _ref5 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(projectAddress) {
-    var provider, signer, factoryContract, tx;
     return _regeneratorRuntime().wrap(function _callee5$(_context5) {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
@@ -94806,438 +95318,536 @@ var approveCCProjectListing = /*#__PURE__*/function () {
           provider = _context5.sent;
           provider.send("eth_requestAccounts", []);
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-          _context5.next = 11;
-          return factoryContract.approveProject(projectAddress);
-        case 11:
-          tx = _context5.sent;
-          _context5.next = 14;
-          return tx.wait();
-        case 14:
-          console.log(tx.hash);
-          _context5.next = 21;
-          break;
-        case 17:
-          _context5.prev = 17;
+          _context5.next = 10;
+          return signer.getAddress();
+        case 10:
+          return _context5.abrupt("return", _context5.sent);
+        case 13:
+          _context5.prev = 13;
           _context5.t0 = _context5["catch"](0);
           console.log(_context5.t0);
           throw "Web3 Error!";
-        case 21:
+        case 17:
         case "end":
           return _context5.stop();
       }
-    }, _callee5, null, [[0, 17]]);
+    }, _callee5, null, [[0, 13]]);
   }));
-  return function approveCCProjectListing(_x4) {
+  return function getWalletAddress() {
     return _ref5.apply(this, arguments);
   };
 }();
-var saveEstCCProjectListing = /*#__PURE__*/function () {
-  var _ref6 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(projectAddress, valueEstimate, repairEstimate) {
-    var provider, signer, factoryContract, tx;
+var approveFunding = /*#__PURE__*/function () {
+  var _ref6 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(projectAddress, amount) {
+    var addresses, provider, signer, ccTokenContract, tx;
     return _regeneratorRuntime().wrap(function _callee6$(_context6) {
       while (1) switch (_context6.prev = _context6.next) {
         case 0:
           _context6.prev = 0;
           _context6.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
+          return getContractAddresses();
         case 3:
-          _context6.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context6.sent;
-          provider.send("eth_requestAccounts", []);
+          addresses = _context6.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-          _context6.next = 11;
-          return factoryContract.saveEstimations(projectAddress, valueEstimate, repairEstimate);
-        case 11:
+          ccTokenContract = new ethers.Contract(addresses.token, CCTOKEN_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          _context6.next = 9;
+          return ccTokenContract.increaseAllowance(projectAddress, appendZeros(amount, 18));
+        case 9:
           tx = _context6.sent;
-          _context6.next = 14;
+          _context6.next = 12;
           return tx.wait();
-        case 14:
+        case 12:
           console.log(tx.hash);
-          _context6.next = 21;
+          _context6.next = 19;
           break;
-        case 17:
-          _context6.prev = 17;
+        case 15:
+          _context6.prev = 15;
           _context6.t0 = _context6["catch"](0);
           console.log(_context6.t0);
           throw "Web3 Error!";
-        case 21:
+        case 19:
         case "end":
           return _context6.stop();
       }
-    }, _callee6, null, [[0, 17]]);
+    }, _callee6, null, [[0, 15]]);
   }));
-  return function saveEstCCProjectListing(_x5, _x6, _x7) {
+  return function approveFunding(_x, _x2) {
     return _ref6.apply(this, arguments);
   };
 }();
-var setRestorerCCProjectListing = /*#__PURE__*/function () {
-  var _ref7 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(projectAddress, restorerAddress, fundingGoal) {
-    var provider, signer, factoryContract, tx;
+var createCCProjectContract = /*#__PURE__*/function () {
+  var _ref7 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7(formData) {
+    var addresses, provider, signer, factoryContract, ownerAddress, listing, vinNumber, make, model, ccpg, fundingGoal, projectAddresses, projectCount, tx;
     return _regeneratorRuntime().wrap(function _callee7$(_context7) {
       while (1) switch (_context7.prev = _context7.next) {
         case 0:
           _context7.prev = 0;
           _context7.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
+          return getContractAddresses();
         case 3:
-          _context7.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context7.sent;
-          provider.send("eth_requestAccounts", []);
+          addresses = _context7.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-          _context7.next = 11;
-          return factoryContract.setRestorer(projectAddress, restorerAddress, appendZeros(fundingGoal, 18));
-        case 11:
-          tx = _context7.sent;
-          _context7.next = 14;
-          return tx.wait();
-        case 14:
-          console.log(tx.hash);
-          _context7.next = 21;
-          break;
-        case 17:
-          _context7.prev = 17;
-          _context7.t0 = _context7["catch"](0);
-          console.log(_context7.t0);
-          throw "Web3 Error!";
-        case 21:
-        case "end":
-          return _context7.stop();
-      }
-    }, _callee7, null, [[0, 17]]);
-  }));
-  return function setRestorerCCProjectListing(_x8, _x9, _x10) {
-    return _ref7.apply(this, arguments);
-  };
-}();
-var assignRestorationCCProjectListing = /*#__PURE__*/function () {
-  var _ref8 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(projectAddress) {
-    var provider, signer, factoryContract, tx;
-    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-      while (1) switch (_context8.prev = _context8.next) {
-        case 0:
-          _context8.prev = 0;
-          _context8.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 3:
-          _context8.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context8.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-          _context8.next = 11;
-          return factoryContract.assignForRestoration(projectAddress);
-        case 11:
-          tx = _context8.sent;
-          _context8.next = 14;
-          return tx.wait();
-        case 14:
-          console.log(tx.hash);
-          _context8.next = 21;
-          break;
-        case 17:
-          _context8.prev = 17;
-          _context8.t0 = _context8["catch"](0);
-          console.log(_context8.t0);
-          throw "Web3 Error!";
-        case 21:
-        case "end":
-          return _context8.stop();
-      }
-    }, _callee8, null, [[0, 17]]);
-  }));
-  return function assignRestorationCCProjectListing(_x11) {
-    return _ref8.apply(this, arguments);
-  };
-}();
-var openAuctionCCProjectListing = /*#__PURE__*/function () {
-  var _ref9 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(projectAddress) {
-    var provider, signer, factoryContract, tx;
-    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-      while (1) switch (_context9.prev = _context9.next) {
-        case 0:
-          _context9.prev = 0;
-          _context9.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 3:
-          _context9.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context9.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-          _context9.next = 11;
-          return factoryContract.setAuctionOpen(projectAddress);
-        case 11:
-          tx = _context9.sent;
-          _context9.next = 14;
-          return tx.wait();
-        case 14:
-          console.log(tx.hash);
-          _context9.next = 21;
-          break;
-        case 17:
-          _context9.prev = 17;
-          _context9.t0 = _context9["catch"](0);
-          console.log(_context9.t0);
-          throw "Web3 Error!";
-        case 21:
-        case "end":
-          return _context9.stop();
-      }
-    }, _callee9, null, [[0, 17]]);
-  }));
-  return function openAuctionCCProjectListing(_x12) {
-    return _ref9.apply(this, arguments);
-  };
-}();
-var setBuyerCCProjectListing = /*#__PURE__*/function () {
-  var _ref10 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(projectAddress, buyerAddress) {
-    var provider, signer, factoryContract, tx;
-    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
-      while (1) switch (_context10.prev = _context10.next) {
-        case 0:
-          _context10.prev = 0;
-          _context10.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 3:
-          _context10.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context10.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-          _context10.next = 11;
-          return factoryContract.setBuyer(projectAddress, buyerAddress);
-        case 11:
-          tx = _context10.sent;
-          _context10.next = 14;
-          return tx.wait();
-        case 14:
-          console.log(tx.hash);
-          _context10.next = 21;
-          break;
-        case 17:
-          _context10.prev = 17;
-          _context10.t0 = _context10["catch"](0);
-          console.log(_context10.t0);
-          throw "Web3 Error!";
-        case 21:
-        case "end":
-          return _context10.stop();
-      }
-    }, _callee10, null, [[0, 17]]);
-  }));
-  return function setBuyerCCProjectListing(_x13, _x14) {
-    return _ref10.apply(this, arguments);
-  };
-}();
-var redistributeCCProjectListing = /*#__PURE__*/function () {
-  var _ref11 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(projectAddress) {
-    var provider, signer, factoryContract, tx;
-    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-      while (1) switch (_context11.prev = _context11.next) {
-        case 0:
-          _context11.prev = 0;
-          _context11.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 3:
-          _context11.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context11.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
-          _context11.next = 11;
-          return factoryContract.redistribute(projectAddress);
-        case 11:
-          tx = _context11.sent;
-          _context11.next = 14;
-          return tx.wait();
-        case 14:
-          console.log(tx.hash);
-          _context11.next = 21;
-          break;
-        case 17:
-          _context11.prev = 17;
-          _context11.t0 = _context11["catch"](0);
-          console.log(_context11.t0);
-          throw "Web3 Error!";
-        case 21:
-        case "end":
-          return _context11.stop();
-      }
-    }, _callee11, null, [[0, 17]]);
-  }));
-  return function redistributeCCProjectListing(_x15) {
-    return _ref11.apply(this, arguments);
-  };
-}();
-var updateCCProjectListing = /*#__PURE__*/function () {
-  var _ref12 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12(projectAddress, formData) {
-    var provider, signer, factoryContract, listing, vinNumber, make, model, ccpg, fundingGoal, tx;
-    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
-      while (1) switch (_context12.prev = _context12.next) {
-        case 0:
-          _context12.prev = 0;
-          _context12.next = 3;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 3:
-          _context12.next = 5;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 5:
-          provider = _context12.sent;
-          provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          factoryContract = new ethers.Contract(FACTORY_ADDRESS, FACTORY_ABI, signer);
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
+          ownerAddress = formData.get("walletAddress");
           listing = JSON.parse(formData.get("listing"));
           vinNumber = listing.vin;
           make = listing.make;
           model = listing.model;
           ccpg = appendZeros(listing.ccpg, 18);
           fundingGoal = appendZeros(listing.fundingGoal, 18);
-          _context12.next = 17;
-          return factoryContract.editProjectDetails(projectAddress, vinNumber, make, model, ccpg, fundingGoal);
-        case 17:
-          tx = _context12.sent;
-          _context12.next = 20;
-          return tx.wait();
+          _context7.next = 16;
+          return factoryContract.getProjects();
+        case 16:
+          projectAddresses = _context7.sent;
+          projectCount = projectAddresses.length; // MetaMask popup will appear when this transaction is sent
+          _context7.next = 20;
+          return factoryContract.createNewProject(vinNumber, make, model, ccpg, fundingGoal, ownerAddress);
         case 20:
-          console.log(tx);
-          _context12.next = 27;
-          break;
+          tx = _context7.sent;
+          _context7.next = 23;
+          return tx.wait();
         case 23:
-          _context12.prev = 23;
+          console.log(tx.hash);
+          _context7.next = 26;
+          return factoryContract.getProjects();
+        case 26:
+          projectAddresses = _context7.sent;
+        case 27:
+          if (!(projectAddresses.length == projectCount)) {
+            _context7.next = 33;
+            break;
+          }
+          _context7.next = 30;
+          return factoryContract.getProjects();
+        case 30:
+          projectAddresses = _context7.sent;
+          _context7.next = 27;
+          break;
+        case 33:
+          projectAddress = projectAddresses[projectAddresses.length - 1];
+          console.log(projectAddress);
+          return _context7.abrupt("return", projectAddress);
+        case 38:
+          _context7.prev = 38;
+          _context7.t0 = _context7["catch"](0);
+          console.log(_context7.t0);
+          throw "Web3 Error!";
+        case 42:
+        case "end":
+          return _context7.stop();
+      }
+    }, _callee7, null, [[0, 38]]);
+  }));
+  return function createCCProjectContract(_x3) {
+    return _ref7.apply(this, arguments);
+  };
+}();
+var approveCCProjectListing = /*#__PURE__*/function () {
+  var _ref8 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(projectAddress) {
+    var addresses, provider, signer, factoryContract, tx;
+    return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+      while (1) switch (_context8.prev = _context8.next) {
+        case 0:
+          _context8.prev = 0;
+          _context8.next = 3;
+          return getContractAddresses();
+        case 3:
+          addresses = _context8.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          signer = provider.getSigner();
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          _context8.next = 9;
+          return factoryContract.approveProject(projectAddress);
+        case 9:
+          tx = _context8.sent;
+          _context8.next = 12;
+          return tx.wait();
+        case 12:
+          console.log(tx.hash);
+          _context8.next = 19;
+          break;
+        case 15:
+          _context8.prev = 15;
+          _context8.t0 = _context8["catch"](0);
+          console.log(_context8.t0);
+          throw "Web3 Error!";
+        case 19:
+        case "end":
+          return _context8.stop();
+      }
+    }, _callee8, null, [[0, 15]]);
+  }));
+  return function approveCCProjectListing(_x4) {
+    return _ref8.apply(this, arguments);
+  };
+}();
+var saveEstCCProjectListing = /*#__PURE__*/function () {
+  var _ref9 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(projectAddress, valueEstimate, repairEstimate) {
+    var addresses, provider, signer, factoryContract, tx;
+    return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+      while (1) switch (_context9.prev = _context9.next) {
+        case 0:
+          _context9.prev = 0;
+          _context9.next = 3;
+          return getContractAddresses();
+        case 3:
+          addresses = _context9.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          signer = provider.getSigner();
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          _context9.next = 9;
+          return factoryContract.saveEstimations(projectAddress, valueEstimate, repairEstimate);
+        case 9:
+          tx = _context9.sent;
+          _context9.next = 12;
+          return tx.wait();
+        case 12:
+          console.log(tx.hash);
+          _context9.next = 19;
+          break;
+        case 15:
+          _context9.prev = 15;
+          _context9.t0 = _context9["catch"](0);
+          console.log(_context9.t0);
+          throw "Web3 Error!";
+        case 19:
+        case "end":
+          return _context9.stop();
+      }
+    }, _callee9, null, [[0, 15]]);
+  }));
+  return function saveEstCCProjectListing(_x5, _x6, _x7) {
+    return _ref9.apply(this, arguments);
+  };
+}();
+var setRestorerCCProjectListing = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(projectAddress, restorerAddress, fundingGoal) {
+    var addresses, provider, signer, factoryContract, tx;
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) switch (_context10.prev = _context10.next) {
+        case 0:
+          _context10.prev = 0;
+          _context10.next = 3;
+          return getContractAddresses();
+        case 3:
+          addresses = _context10.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          signer = provider.getSigner();
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          _context10.next = 9;
+          return factoryContract.setRestorer(projectAddress, restorerAddress, appendZeros(fundingGoal, 18));
+        case 9:
+          tx = _context10.sent;
+          _context10.next = 12;
+          return tx.wait();
+        case 12:
+          console.log(tx.hash);
+          _context10.next = 19;
+          break;
+        case 15:
+          _context10.prev = 15;
+          _context10.t0 = _context10["catch"](0);
+          console.log(_context10.t0);
+          throw "Web3 Error!";
+        case 19:
+        case "end":
+          return _context10.stop();
+      }
+    }, _callee10, null, [[0, 15]]);
+  }));
+  return function setRestorerCCProjectListing(_x8, _x9, _x10) {
+    return _ref10.apply(this, arguments);
+  };
+}();
+var assignRestorationCCProjectListing = /*#__PURE__*/function () {
+  var _ref11 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(projectAddress) {
+    var addresses, provider, signer, factoryContract, tx;
+    return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+      while (1) switch (_context11.prev = _context11.next) {
+        case 0:
+          _context11.prev = 0;
+          _context11.next = 3;
+          return getContractAddresses();
+        case 3:
+          addresses = _context11.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          signer = provider.getSigner();
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          _context11.next = 9;
+          return factoryContract.assignForRestoration(projectAddress);
+        case 9:
+          tx = _context11.sent;
+          _context11.next = 12;
+          return tx.wait();
+        case 12:
+          console.log(tx.hash);
+          _context11.next = 19;
+          break;
+        case 15:
+          _context11.prev = 15;
+          _context11.t0 = _context11["catch"](0);
+          console.log(_context11.t0);
+          throw "Web3 Error!";
+        case 19:
+        case "end":
+          return _context11.stop();
+      }
+    }, _callee11, null, [[0, 15]]);
+  }));
+  return function assignRestorationCCProjectListing(_x11) {
+    return _ref11.apply(this, arguments);
+  };
+}();
+var openAuctionCCProjectListing = /*#__PURE__*/function () {
+  var _ref12 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee12(projectAddress) {
+    var addresses, provider, signer, factoryContract, tx;
+    return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+      while (1) switch (_context12.prev = _context12.next) {
+        case 0:
+          _context12.prev = 0;
+          _context12.next = 3;
+          return getContractAddresses();
+        case 3:
+          addresses = _context12.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          signer = provider.getSigner();
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          _context12.next = 9;
+          return factoryContract.setAuctionOpen(projectAddress);
+        case 9:
+          tx = _context12.sent;
+          _context12.next = 12;
+          return tx.wait();
+        case 12:
+          console.log(tx.hash);
+          _context12.next = 19;
+          break;
+        case 15:
+          _context12.prev = 15;
           _context12.t0 = _context12["catch"](0);
           console.log(_context12.t0);
           throw "Web3 Error!";
-        case 27:
+        case 19:
         case "end":
           return _context12.stop();
       }
-    }, _callee12, null, [[0, 23]]);
+    }, _callee12, null, [[0, 15]]);
   }));
-  return function updateCCProjectListing(_x16, _x17) {
+  return function openAuctionCCProjectListing(_x12) {
     return _ref12.apply(this, arguments);
   };
 }();
-var investInCCProjectListing = /*#__PURE__*/function () {
-  var _ref13 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee13(projectAddress, amount) {
-    var provider, signer, projectContract, tx;
+var setBuyerCCProjectListing = /*#__PURE__*/function () {
+  var _ref13 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee13(projectAddress, buyerAddress) {
+    var addresses, provider, signer, factoryContract, tx;
     return _regeneratorRuntime().wrap(function _callee13$(_context13) {
       while (1) switch (_context13.prev = _context13.next) {
         case 0:
           _context13.prev = 0;
           _context13.next = 3;
-          return approveFunding(projectAddress, amount);
+          return getContractAddresses();
         case 3:
-          _context13.next = 5;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 5:
-          _context13.next = 7;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 7:
-          provider = _context13.sent;
-          provider.send("eth_requestAccounts", []);
+          addresses = _context13.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          projectContract = new ethers.Contract(projectAddress, PROJECT_ABI, signer);
-          _context13.next = 13;
-          return projectContract.acceptFunds(appendZeros(amount, 18));
-        case 13:
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          _context13.next = 9;
+          return factoryContract.setBuyer(projectAddress, buyerAddress);
+        case 9:
           tx = _context13.sent;
-          _context13.next = 16;
+          _context13.next = 12;
           return tx.wait();
-        case 16:
+        case 12:
           console.log(tx.hash);
-          _context13.next = 23;
+          _context13.next = 19;
           break;
-        case 19:
-          _context13.prev = 19;
+        case 15:
+          _context13.prev = 15;
           _context13.t0 = _context13["catch"](0);
           console.log(_context13.t0);
           throw "Web3 Error!";
-        case 23:
+        case 19:
         case "end":
           return _context13.stop();
       }
-    }, _callee13, null, [[0, 19]]);
+    }, _callee13, null, [[0, 15]]);
   }));
-  return function investInCCProjectListing(_x18, _x19) {
+  return function setBuyerCCProjectListing(_x13, _x14) {
     return _ref13.apply(this, arguments);
   };
 }();
-var bidForCCProjectListing = /*#__PURE__*/function () {
-  var _ref14 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee14(projectAddress, amount) {
-    var provider, signer, projectContract, tx;
+var redistributeCCProjectListing = /*#__PURE__*/function () {
+  var _ref14 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee14(projectAddress) {
+    var addresses, provider, signer, factoryContract, tx;
     return _regeneratorRuntime().wrap(function _callee14$(_context14) {
       while (1) switch (_context14.prev = _context14.next) {
         case 0:
           _context14.prev = 0;
           _context14.next = 3;
-          return approveFunding(projectAddress, amount);
+          return getContractAddresses();
         case 3:
-          _context14.next = 5;
-          return window.ethereum.request({
-            method: "eth_requestAccounts"
-          });
-        case 5:
-          _context14.next = 7;
-          return new ethers.providers.Web3Provider(window.ethereum, "any");
-        case 7:
-          provider = _context14.sent;
-          provider.send("eth_requestAccounts", []);
+          addresses = _context14.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          projectContract = new ethers.Contract(projectAddress, PROJECT_ABI, signer);
-          _context14.next = 13;
-          return projectContract.addNewAuctionBid(appendZeros(amount, 18));
-        case 13:
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          _context14.next = 9;
+          return factoryContract.redistribute(projectAddress);
+        case 9:
           tx = _context14.sent;
-          _context14.next = 16;
+          _context14.next = 12;
           return tx.wait();
-        case 16:
+        case 12:
           console.log(tx.hash);
-          _context14.next = 23;
+          _context14.next = 19;
           break;
-        case 19:
-          _context14.prev = 19;
+        case 15:
+          _context14.prev = 15;
           _context14.t0 = _context14["catch"](0);
           console.log(_context14.t0);
           throw "Web3 Error!";
-        case 23:
+        case 19:
         case "end":
           return _context14.stop();
       }
-    }, _callee14, null, [[0, 19]]);
+    }, _callee14, null, [[0, 15]]);
+  }));
+  return function redistributeCCProjectListing(_x15) {
+    return _ref14.apply(this, arguments);
+  };
+}();
+var updateCCProjectListing = /*#__PURE__*/function () {
+  var _ref15 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee15(projectAddress, formData) {
+    var addresses, provider, signer, factoryContract, listing, vinNumber, make, model, ccpg, fundingGoal, tx;
+    return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+      while (1) switch (_context15.prev = _context15.next) {
+        case 0:
+          _context15.prev = 0;
+          _context15.next = 3;
+          return getContractAddresses();
+        case 3:
+          addresses = _context15.sent;
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          signer = provider.getSigner();
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
+          listing = JSON.parse(formData.get("listing"));
+          vinNumber = listing.vin;
+          make = listing.make;
+          model = listing.model;
+          ccpg = appendZeros(listing.ccpg, 18);
+          fundingGoal = appendZeros(listing.fundingGoal, 18); // MetaMask popup will appear when this transaction is sent
+          _context15.next = 15;
+          return factoryContract.editProjectDetails(projectAddress, vinNumber, make, model, ccpg, fundingGoal);
+        case 15:
+          tx = _context15.sent;
+          _context15.next = 18;
+          return tx.wait();
+        case 18:
+          console.log(tx);
+          _context15.next = 25;
+          break;
+        case 21:
+          _context15.prev = 21;
+          _context15.t0 = _context15["catch"](0);
+          console.log(_context15.t0);
+          throw "Web3 Error!";
+        case 25:
+        case "end":
+          return _context15.stop();
+      }
+    }, _callee15, null, [[0, 21]]);
+  }));
+  return function updateCCProjectListing(_x16, _x17) {
+    return _ref15.apply(this, arguments);
+  };
+}();
+var investInCCProjectListing = /*#__PURE__*/function () {
+  var _ref16 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee16(projectAddress, amount) {
+    var provider, signer, projectContract, tx;
+    return _regeneratorRuntime().wrap(function _callee16$(_context16) {
+      while (1) switch (_context16.prev = _context16.next) {
+        case 0:
+          _context16.prev = 0;
+          _context16.next = 3;
+          return approveFunding(projectAddress, amount);
+        case 3:
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          signer = provider.getSigner();
+          projectContract = new ethers.Contract(projectAddress, PROJECT_ABI, signer); // Second MetaMask popup will appear when this transaction is sent
+          _context16.next = 8;
+          return projectContract.acceptFunds(appendZeros(amount, 18));
+        case 8:
+          tx = _context16.sent;
+          _context16.next = 11;
+          return tx.wait();
+        case 11:
+          console.log(tx.hash);
+          _context16.next = 18;
+          break;
+        case 14:
+          _context16.prev = 14;
+          _context16.t0 = _context16["catch"](0);
+          console.log(_context16.t0);
+          throw "Web3 Error!";
+        case 18:
+        case "end":
+          return _context16.stop();
+      }
+    }, _callee16, null, [[0, 14]]);
+  }));
+  return function investInCCProjectListing(_x18, _x19) {
+    return _ref16.apply(this, arguments);
+  };
+}();
+var bidForCCProjectListing = /*#__PURE__*/function () {
+  var _ref17 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee17(projectAddress, amount) {
+    var provider, signer, projectContract, tx;
+    return _regeneratorRuntime().wrap(function _callee17$(_context17) {
+      while (1) switch (_context17.prev = _context17.next) {
+        case 0:
+          _context17.prev = 0;
+          _context17.next = 3;
+          return approveFunding(projectAddress, amount);
+        case 3:
+          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
+          provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+          signer = provider.getSigner();
+          projectContract = new ethers.Contract(projectAddress, PROJECT_ABI, signer); // Second MetaMask popup will appear when this transaction is sent
+          _context17.next = 8;
+          return projectContract.addNewAuctionBid(appendZeros(amount, 18));
+        case 8:
+          tx = _context17.sent;
+          _context17.next = 11;
+          return tx.wait();
+        case 11:
+          console.log(tx.hash);
+          _context17.next = 18;
+          break;
+        case 14:
+          _context17.prev = 14;
+          _context17.t0 = _context17["catch"](0);
+          console.log(_context17.t0);
+          throw "Web3 Error!";
+        case 18:
+        case "end":
+          return _context17.stop();
+      }
+    }, _callee17, null, [[0, 14]]);
   }));
   return function bidForCCProjectListing(_x20, _x21) {
-    return _ref14.apply(this, arguments);
+    return _ref17.apply(this, arguments);
   };
 }();
 module.exports = {
