@@ -31,6 +31,53 @@ public class InvestmentController {
     return new ResponseEntity<>(investments, HttpStatus.CREATED);
   }
 
+  /**
+   * Create investment with blockchain transaction verification and jBPM synchronization
+   * 
+   */
+  @PostMapping("/users/{userId}/investments/with-transaction")
+  public ResponseEntity<?> createInvestmentWithTransaction(
+      @RequestBody java.util.Map<String, Object> request,
+      @PathVariable(value = "userId") Long userId) {
+    try {
+      Investment investment = new Investment();
+      if (request.get("amount") != null) {
+        investment.setAmount(((Number) request.get("amount")).floatValue());
+      }
+      if (request.get("listing") != null) {
+        @SuppressWarnings("unchecked")
+        java.util.Map<String, Object> listingMap = (java.util.Map<String, Object>) request.get("listing");
+        com.company.models.ProjectListing listing = new com.company.models.ProjectListing();
+        if (listingMap.get("id") != null) {
+          listing.setId(((Number) listingMap.get("id")).longValue());
+        }
+        investment.setListing(listing);
+      }
+      
+      String transactionHash = (String) request.get("transactionHash");
+      if (transactionHash == null || transactionHash.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("Error: transactionHash is required");
+      }
+      
+      Investment createdInvestment = investmentService.createInvestmentWithTransaction(
+          investment, userId, transactionHash);
+      
+      if (createdInvestment == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("Error: Failed to create investment");
+      }
+      
+      return new ResponseEntity<>(createdInvestment, HttpStatus.CREATED);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("Error: " + e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Error: " + e.getMessage());
+    }
+  }
+
   @GetMapping("/users/id/{userId}/investments")
   public ResponseEntity<List<Investment>> getAllInvestmentsByUserId(@PathVariable(value = "userId") Long userId) {
     List<Investment> investments = investmentService.getAllInvestmentsByUserId(userId);

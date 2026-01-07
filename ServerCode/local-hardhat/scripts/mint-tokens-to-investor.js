@@ -13,7 +13,7 @@ async function main() {
   const AMOUNT = process.env.AMOUNT || "100000000000000000000"; // 100 tokens in wei (default)
 
   if (!INVESTOR_ADDRESS) {
-    console.error("❌ Please set INVESTOR_ADDRESS environment variable");
+    console.error("Please set INVESTOR_ADDRESS environment variable");
     console.log("Usage: INVESTOR_ADDRESS=0x... AMOUNT=100000000000000000000 npx hardhat run scripts/mint-tokens-to-investor.js --network localhost");
     console.log("\nTo get your MetaMask investor address:");
     console.log("1. Open MetaMask");
@@ -34,7 +34,7 @@ async function main() {
     const currentBalance = await token.balanceOf(INVESTOR_ADDRESS);
     console.log("\nCurrent investor balance:", currentBalance.toString(), "wei (", hre.ethers.utils.formatEther(currentBalance), "tokens)");
   } catch (error) {
-    console.error("❌ Error checking balance:", error.message);
+    console.error("Error checking balance:", error.message);
     console.error("   Make sure the token contract is deployed at:", TOKEN_ADDRESS);
     process.exit(1);
   }
@@ -45,14 +45,14 @@ async function main() {
     const mintTx = await token.mint(INVESTOR_ADDRESS, AMOUNT);
     console.log("Transaction hash:", mintTx.hash);
     await mintTx.wait();
-    console.log("✅ Tokens minted successfully!");
+    console.log("Tokens minted successfully!");
 
     // Verify new balance
     const newBalance = await token.balanceOf(INVESTOR_ADDRESS);
     console.log("\nNew investor balance:", newBalance.toString(), "wei (", hre.ethers.utils.formatEther(newBalance), "tokens)");
-    console.log("\n✅ Investor can now invest in projects!");
+    console.log("\nInvestor can now invest in projects!");
   } catch (error) {
-    console.error("❌ Error minting tokens:", error.message);
+    console.error("Error minting tokens:", error.message);
     if (error.message.includes("Ownable: caller is not the owner")) {
       console.error("\n   The deployer account is not the owner of the token contract.");
       console.error("   Make sure you're using the correct deployer account.");

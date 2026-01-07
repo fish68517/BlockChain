@@ -67,7 +67,7 @@ function Header({ dispatch, user }) {
         >
           {renderRoleBasedNav()}
           <>
-            {user && <MetaConnect />}
+            {user && !user.roles?.includes("ROLE_ADMIN") && <MetaConnect />}
             {user && (
               <button className="btn btn-outline-light" onClick={onLogout}>
                 Log out

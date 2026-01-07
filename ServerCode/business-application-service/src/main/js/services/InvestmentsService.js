@@ -24,9 +24,27 @@ const createInvestmentsByUserID = (userID, data) => {
   );
 };
 
+const createInvestmentsByUserIDWithTransaction = (userID, data, transactionHash) => {
+  const requestData = {
+    ...data,
+    transactionHash: transactionHash
+  };
+  return axios.post(
+    `http://localhost:8090/api/users/${userID}/investments/with-transaction`,
+    requestData,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+    }
+  );
+};
+
 const InvestmentService = {
   getInvestmentsByUserID,
   createInvestmentsByUserID,
+  createInvestmentsByUserIDWithTransaction,
 };
 
 module.exports = InvestmentService;

@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.company.repositories.InvestmentRepository;
 import com.company.models.Investment;
 import com.company.models.ProjectListing;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
 import com.company.repositories.ProjectListingRepository;
 import com.company.exception.ResourceNotFoundException;
 import java.util.Map;
@@ -38,6 +36,34 @@ public class InvestmentService {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private com.company.services.BlockchainService blockchainService;
+
+  /**
+   * Create investment and complete jBPM task after verifying blockchain transaction
+   * @param investment The investment data
+   * @param userId The user ID making the investment
+   * @param transactionHash The blockchain transaction hash to verify
+   * @return The created investment
+   */
+  public Investment createInvestmentWithTransaction(Investment investment, Long userId, String transactionHash) {
+    if (transactionHash == null || transactionHash.isEmpty()) {
+      logger.error("Transaction hash is required for investment synchronization");
+      throw new RuntimeException("Transaction hash is required");
+    }
+    
+    boolean isVerified = blockchainService.verifyTransaction(transactionHash);
+    if (!isVerified) {
+      logger.error("Blockchain transaction verification failed for hash: {}", transactionHash);
+      throw new RuntimeException("Blockchain transaction verification failed. Transaction may not exist or may have failed.");
+    }
+    
+    logger.info("Blockchain transaction verified successfully: {}", transactionHash);
+    
+    // Proceed with investment creation and jBPM task completion
+    return createInvestment(investment, userId);
+  }
 
   public Investment createInvestment(Investment investment, Long userId) {
     System.out.println(investment.toString());

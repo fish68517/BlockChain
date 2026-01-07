@@ -25,13 +25,13 @@ async function main() {
   console.log("\nCurrent factory owner:", currentOwner);
   
   if (currentOwner.toLowerCase() === ADMIN_ADDRESS.toLowerCase()) {
-    console.log("✅ Factory is already owned by admin address!");
+    console.log("Factory is already owned by admin address!");
     return;
   }
   
   // Check if deployer is the current owner
   if (currentOwner.toLowerCase() !== deployer.address.toLowerCase()) {
-    console.log("❌ Deployer is not the current owner. Cannot transfer ownership.");
+    console.log("Deployer is not the current owner. Cannot transfer ownership.");
     console.log("Please use the account that owns the factory to transfer ownership.");
     return;
   }
@@ -43,16 +43,16 @@ async function main() {
   console.log("Transaction hash:", tx.hash);
   
   await tx.wait();
-  console.log("✅ Ownership transferred!");
+  console.log("Ownership transferred!");
   
   // Verify new owner
   const newOwner = await factory.owner();
   console.log("New factory owner:", newOwner);
   
   if (newOwner.toLowerCase() === ADMIN_ADDRESS.toLowerCase()) {
-    console.log("✅ Verification successful! Factory is now owned by admin address.");
+    console.log("Verification successful! Factory is now owned by admin address.");
   } else {
-    console.log("❌ Verification failed. Owner mismatch.");
+    console.log("Verification failed. Owner mismatch.");
   }
 }
 

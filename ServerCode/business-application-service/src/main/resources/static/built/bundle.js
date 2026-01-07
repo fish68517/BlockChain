@@ -90095,6 +90095,172 @@ module.exports = PostItemForSale;
 
 /***/ }),
 
+/***/ "./src/main/js/components/admin/RedistributionDetails.js":
+/*!***************************************************************!*\
+  !*** ./src/main/js/components/admin/RedistributionDetails.js ***!
+  \***************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+var _require = __webpack_require__(/*! react */ "./node_modules/react/index.js"),
+  useState = _require.useState,
+  useEffect = _require.useEffect;
+var _require2 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js"),
+  Card = _require2.Card,
+  Table = _require2.Table,
+  Spinner = _require2.Spinner,
+  Alert = _require2.Alert;
+var _require3 = __webpack_require__(/*! ../../utils/blockchainAPI */ "./src/main/js/utils/blockchainAPI.js"),
+  getRedistributionDetails = _require3.getRedistributionDetails;
+var RedistributionDetails = function RedistributionDetails(_ref) {
+  var projectAddress = _ref.projectAddress;
+  var _useState = useState([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    details = _useState2[0],
+    setDetails = _useState2[1];
+  var _useState3 = useState(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = useState(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    error = _useState6[0],
+    setError = _useState6[1];
+  useEffect(function () {
+    if (projectAddress) {
+      loadRedistributionDetails();
+    }
+  }, [projectAddress]);
+  var loadRedistributionDetails = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var data;
+      return _regeneratorRuntime().wrap(function _callee$(_context) {
+        while (1) switch (_context.prev = _context.next) {
+          case 0:
+            setLoading(true);
+            setError(null);
+            _context.prev = 2;
+            _context.next = 5;
+            return getRedistributionDetails(projectAddress);
+          case 5:
+            data = _context.sent;
+            setDetails(data || []);
+            _context.next = 13;
+            break;
+          case 9:
+            _context.prev = 9;
+            _context.t0 = _context["catch"](2);
+            console.error("Error loading redistribution details:", _context.t0);
+            setError(_context.t0.message || "Failed to load redistribution details");
+          case 13:
+            _context.prev = 13;
+            setLoading(false);
+            return _context.finish(13);
+          case 16:
+          case "end":
+            return _context.stop();
+        }
+      }, _callee, null, [[2, 9, 13, 16]]);
+    }));
+    return function loadRedistributionDetails() {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  var formatAddress = function formatAddress(address) {
+    if (!address) return "";
+    return "".concat(address.substring(0, 6), "...").concat(address.substring(address.length - 4));
+  };
+  var getRecipientTypeLabel = function getRecipientTypeLabel(type) {
+    switch (type) {
+      case "ADMIN":
+        return "Admin (Commission)";
+      case "OWNER":
+        return "Owner";
+      case "INVESTOR":
+        return "Investor";
+      default:
+        return type;
+    }
+  };
+  var getRecipientTypeBadge = function getRecipientTypeBadge(type) {
+    var badges = {
+      ADMIN: "badge bg-danger",
+      OWNER: "badge bg-primary",
+      INVESTOR: "badge bg-success"
+    };
+    return badges[type] || "badge bg-secondary";
+  };
+  if (!projectAddress) {
+    return null;
+  }
+  if (loading) {
+    return /*#__PURE__*/React.createElement(Card, {
+      className: "mt-3"
+    }, /*#__PURE__*/React.createElement(Card.Body, {
+      className: "text-center"
+    }, /*#__PURE__*/React.createElement(Spinner, {
+      animation: "border",
+      size: "sm",
+      className: "me-2"
+    }), "Loading redistribution details..."));
+  }
+  if (error) {
+    return /*#__PURE__*/React.createElement(Card, {
+      className: "mt-3"
+    }, /*#__PURE__*/React.createElement(Card.Body, null, /*#__PURE__*/React.createElement(Alert, {
+      variant: "danger"
+    }, /*#__PURE__*/React.createElement("strong", null, "Error:"), " ", error)));
+  }
+  if (details.length === 0) {
+    return /*#__PURE__*/React.createElement(Card, {
+      className: "mt-3"
+    }, /*#__PURE__*/React.createElement(Card.Body, null, /*#__PURE__*/React.createElement(Card.Title, null, "Redistribution Details"), /*#__PURE__*/React.createElement("p", {
+      className: "text-muted"
+    }, "No redistribution has occurred yet for this project.")));
+  }
+
+  // Calculate total redistributed
+  var totalRedistributed = details.reduce(function (sum, detail) {
+    return sum + parseFloat(detail.formattedAmount || 0);
+  }, 0);
+  return /*#__PURE__*/React.createElement(Card, {
+    className: "mt-3"
+  }, /*#__PURE__*/React.createElement(Card.Body, null, /*#__PURE__*/React.createElement(Card.Title, null, "Redistribution Details"), /*#__PURE__*/React.createElement("p", {
+    className: "text-muted"
+  }, "Funds distributed after auction sale. Total: ", /*#__PURE__*/React.createElement("strong", null, totalRedistributed.toLocaleString(), " CC Tokens")), /*#__PURE__*/React.createElement(Table, {
+    striped: true,
+    bordered: true,
+    hover: true,
+    responsive: true
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Recipient Type"), /*#__PURE__*/React.createElement("th", null, "Address"), /*#__PURE__*/React.createElement("th", null, "Amount (CC Tokens)"))), /*#__PURE__*/React.createElement("tbody", null, details.map(function (detail, index) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: index
+    }, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+      className: getRecipientTypeBadge(detail.recipientType)
+    }, getRecipientTypeLabel(detail.recipientType))), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("code", null, formatAddress(detail.recipientAddress)), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("small", {
+      className: "text-muted"
+    }, detail.recipientAddress)), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("strong", null, parseFloat(detail.formattedAmount || 0).toLocaleString())));
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn btn-sm btn-outline-primary",
+    onClick: loadRedistributionDetails
+  }, "Refresh"))));
+};
+module.exports = RedistributionDetails;
+
+/***/ }),
+
 /***/ "./src/main/js/components/admin/StartAuction.js":
 /*!******************************************************!*\
   !*** ./src/main/js/components/admin/StartAuction.js ***!
@@ -90640,6 +90806,7 @@ var _require3 = __webpack_require__(/*! react-redux */ "./node_modules/react-red
   connect = _require3.connect;
 var MetaConnect = __webpack_require__(/*! ../web3/MetaConnect */ "./src/main/js/components/web3/MetaConnect.js");
 function Header(_ref) {
+  var _user$roles;
   var dispatch = _ref.dispatch,
     user = _ref.user;
   var navigate = useNavigate();
@@ -90687,7 +90854,7 @@ function Header(_ref) {
   })), /*#__PURE__*/React.createElement("div", {
     className: "collapse navbar-collapse justify-content-between",
     id: "navbarSupportedContent"
-  }, renderRoleBasedNav(), /*#__PURE__*/React.createElement(React.Fragment, null, user && /*#__PURE__*/React.createElement(MetaConnect, null), user && /*#__PURE__*/React.createElement("button", {
+  }, renderRoleBasedNav(), /*#__PURE__*/React.createElement(React.Fragment, null, user && !((_user$roles = user.roles) !== null && _user$roles !== void 0 && _user$roles.includes("ROLE_ADMIN")) && /*#__PURE__*/React.createElement(MetaConnect, null), user && /*#__PURE__*/React.createElement("button", {
     className: "btn btn-outline-light",
     onClick: onLogout
   }, "Log out")))));
@@ -91662,6 +91829,7 @@ var Modal = __webpack_require__(/*! ../../components/common/Modal */ "./src/main
 var _require3 = __webpack_require__(/*! ../../utils/blockchainAPI */ "./src/main/js/utils/blockchainAPI.js"),
   setBuyer = _require3.setBuyer,
   redistribute = _require3.redistribute;
+var RedistributionDetails = __webpack_require__(/*! ../../components/admin/RedistributionDetails */ "./src/main/js/components/admin/RedistributionDetails.js");
 var _require4 = __webpack_require__(/*! ../../actions/AuctionBid */ "./src/main/js/actions/AuctionBid.js"),
   getAllAuctionBids = _require4.getAllAuctionBids,
   selectAuctionBid = _require4.selectAuctionBid;
@@ -91835,14 +92003,29 @@ function AuctionBidListing(_ref) {
 var SelectedAuctionBidListings = function SelectedAuctionBidListings(_ref2) {
   var auctionBidListings = _ref2.auctionBidListings,
     projectListings = _ref2.projectListings;
-  return /*#__PURE__*/React.createElement("table", null, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Listing ID"), /*#__PURE__*/React.createElement("th", null, "Make"), /*#__PURE__*/React.createElement("th", null, "Model"), /*#__PURE__*/React.createElement("th", null, "VIN"), /*#__PURE__*/React.createElement("th", null, "Value Estimation"), /*#__PURE__*/React.createElement("th", null, "Buy Bid Amount"), /*#__PURE__*/React.createElement("th", null, "Buyer ID"))), /*#__PURE__*/React.createElement("tbody", null, auctionBidListings.map(function (bid) {
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("table", {
+    className: "mb-4"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Listing ID"), /*#__PURE__*/React.createElement("th", null, "Make"), /*#__PURE__*/React.createElement("th", null, "Model"), /*#__PURE__*/React.createElement("th", null, "VIN"), /*#__PURE__*/React.createElement("th", null, "Value Estimation"), /*#__PURE__*/React.createElement("th", null, "Buy Bid Amount"), /*#__PURE__*/React.createElement("th", null, "Buyer ID"))), /*#__PURE__*/React.createElement("tbody", null, auctionBidListings.map(function (bid) {
     var projectListing = projectListings.find(function (p) {
       return p.id === bid.listingId;
     });
     return /*#__PURE__*/React.createElement("tr", {
       key: bid.id
     }, /*#__PURE__*/React.createElement("td", null, projectListing.id), /*#__PURE__*/React.createElement("td", null, projectListing.make), /*#__PURE__*/React.createElement("td", null, projectListing.model), /*#__PURE__*/React.createElement("td", null, projectListing.vin), /*#__PURE__*/React.createElement("td", null, projectListing.valueEstimation), /*#__PURE__*/React.createElement("td", null, bid.buyerPrice), /*#__PURE__*/React.createElement("td", null, bid.buyerId));
-  })));
+  }))), auctionBidListings.map(function (bid) {
+    var projectListing = projectListings.find(function (p) {
+      return p.id === bid.listingId;
+    });
+    if (projectListing && projectListing.isRedistributed && projectListing.projectAddress) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: "redist-".concat(bid.id),
+        className: "mb-4"
+      }, /*#__PURE__*/React.createElement("h5", null, "Redistribution Details - ", projectListing.make, " ", projectListing.model), /*#__PURE__*/React.createElement(RedistributionDetails, {
+        projectAddress: projectListing.projectAddress
+      }));
+    }
+    return null;
+  }));
 };
 var mapStateToProps = function mapStateToProps(state) {
   return {
@@ -92125,6 +92308,7 @@ var PostItemForSale = __webpack_require__(/*! ../../components/admin/PostItemFor
 var StartAuction = __webpack_require__(/*! ../../components/admin/StartAuction */ "./src/main/js/components/admin/StartAuction.js");
 var AssignRestoration = __webpack_require__(/*! ../../components/admin/AssignRestoration */ "./src/main/js/components/admin/AssignRestoration.js");
 var ProjectListingStatus = __webpack_require__(/*! ../../components/common/ProjectListingStatus */ "./src/main/js/components/common/ProjectListingStatus.js");
+var RedistributionDetails = __webpack_require__(/*! ../../components/admin/RedistributionDetails */ "./src/main/js/components/admin/RedistributionDetails.js");
 
 // Helper function to append zeros (convert to wei)
 var appendZeros = function appendZeros(amount, count) {
@@ -92267,6 +92451,7 @@ function ProjectListingDetails(_ref) {
   var onSubmitApprovalHandler = /*#__PURE__*/function () {
     var _ref6 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(areDetailsVerified, isTitleReceived) {
       var message,
+        updatedListing,
         _args4 = arguments;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) switch (_context4.prev = _context4.next) {
@@ -92274,20 +92459,51 @@ function ProjectListingDetails(_ref) {
             message = _args4.length > 2 && _args4[2] !== undefined ? _args4[2] : null;
             _context4.prev = 1;
             _context4.next = 4;
-            return approveProject(listing.projectAddress);
+            return onSubmitApproval(areDetailsVerified, isTitleReceived, message);
           case 4:
-            return _context4.abrupt("return", onSubmitApproval(areDetailsVerified, isTitleReceived, message));
+            if (!(areDetailsVerified && isTitleReceived)) {
+              _context4.next = 18;
+              break;
+            }
+            _context4.next = 7;
+            return new Promise(function (resolve) {
+              return setTimeout(resolve, 2000);
+            });
           case 7:
-            _context4.prev = 7;
-            _context4.t0 = _context4["catch"](1);
-            console.error("Error approving project:", _context4.t0);
-            setError(_context4.t0.message || "Unable to update approval in smart contract");
-            throw _context4.t0;
+            // Refresh listing to get updated projectAddress
+            updatedListing = projectListings.find(function (p) {
+              return p.id === parseInt(id);
+            });
+            if (!(updatedListing && updatedListing.projectAddress)) {
+              _context4.next = 18;
+              break;
+            }
+            _context4.prev = 9;
+            _context4.next = 12;
+            return approveProject(updatedListing.projectAddress);
           case 12:
+            _context4.next = 18;
+            break;
+          case 14:
+            _context4.prev = 14;
+            _context4.t0 = _context4["catch"](9);
+            console.error("Error approving project on blockchain:", _context4.t0);
+            // Don't throw - the project is already created, approval can be retried
+            setError("Project created but blockchain approval failed. You can retry approval later.");
+          case 18:
+            _context4.next = 25;
+            break;
+          case 20:
+            _context4.prev = 20;
+            _context4.t1 = _context4["catch"](1);
+            console.error("Error in approval process:", _context4.t1);
+            setError(_context4.t1.message || "Unable to complete approval process");
+            throw _context4.t1;
+          case 25:
           case "end":
             return _context4.stop();
         }
-      }, _callee4, null, [[1, 7]]);
+      }, _callee4, null, [[1, 20], [9, 14]]);
     }));
     return function onSubmitApprovalHandler(_x3, _x4) {
       return _ref6.apply(this, arguments);
@@ -92352,6 +92568,8 @@ function ProjectListingDetails(_ref) {
     listing: listing,
     isEditable: canEditEstimation,
     saveEstimations: onSubmitEstimationsHandler
+  }), listing.isRedistributed && listing.projectAddress && /*#__PURE__*/React.createElement(RedistributionDetails, {
+    projectAddress: listing.projectAddress
   }));
 }
 var mapStateToProps = function mapStateToProps(_ref7) {
@@ -92803,6 +93021,8 @@ var _require4 = __webpack_require__(/*! ../../utils/web3Utils */ "./src/main/js/
 var MetaConnectModal = __webpack_require__(/*! ../../components/web3/MetaConnectModal */ "./src/main/js/components/web3/MetaConnectModal.js");
 var _require5 = __webpack_require__(/*! ../../actions/Investments */ "./src/main/js/actions/Investments.js"),
   createInvestmentsByUserID = _require5.createInvestmentsByUserID;
+var _require6 = __webpack_require__(/*! ../../services/InvestmentsService */ "./src/main/js/services/InvestmentsService.js"),
+  createInvestmentsByUserIDWithTransaction = _require6.createInvestmentsByUserIDWithTransaction;
 var ProjectListingInvestor = function ProjectListingInvestor(_ref) {
   var dispatch = _ref.dispatch,
     projectListing = _ref.projectListing,
@@ -92813,7 +93033,7 @@ var ProjectListingInvestor = function ProjectListingInvestor(_ref) {
     setShowModal = _useState2[1];
   var createInvestment = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(event) {
-      var investment, clearFields;
+      var investment, clearFields, transactionHash, response, _e$response;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -92834,33 +93054,41 @@ var ProjectListingInvestor = function ProjectListingInvestor(_ref) {
             clearFields = function clearFields() {
               setAmount("");
             };
+            transactionHash = null;
             if (!window.ethereum) {
-              _context.next = 11;
+              _context.next = 26;
               break;
             }
-            _context.next = 9;
+            _context.prev = 8;
+            _context.next = 11;
             return investInCCProjectListing(projectListing.projectAddress, amount);
-          case 9:
-            _context.next = 14;
-            break;
           case 11:
+            transactionHash = _context.sent;
+            _context.next = 14;
+            return createInvestmentsByUserIDWithTransaction(user.id, investment, transactionHash);
+          case 14:
+            response = _context.sent;
+            clearFields();
+            setError();
+            setStatus("Successfully created investment for listing ".concat(projectListing.id, "."));
+            _context.next = 24;
+            break;
+          case 20:
+            _context.prev = 20;
+            _context.t0 = _context["catch"](8);
+            console.error("Investment error:", _context.t0);
+            setError(((_e$response = _context.t0.response) === null || _e$response === void 0 ? void 0 : _e$response.data) || _context.t0.message || "Error creating investment. Transaction may have failed.");
+          case 24:
+            _context.next = 28;
+            break;
+          case 26:
             setShowModal(true);
             setError("Unable to make investment in Contract");
-            throw "Unable to make investment in Contract";
-          case 14:
-            dispatch(createInvestmentsByUserID(user.id, investment)).then(function () {
-              clearFields();
-              setError();
-              setStatus("Successfully created investment for listing ".concat(projectListing.id, "."));
-            })["catch"](function (e) {
-              console.log(e);
-              setError("Error creating investment.");
-            });
-          case 15:
+          case 28:
           case "end":
             return _context.stop();
         }
-      }, _callee);
+      }, _callee, null, [[8, 20]]);
     }));
     return function createInvestment(_x) {
       return _ref2.apply(this, arguments);
@@ -93105,12 +93333,10 @@ var _require2 = __webpack_require__(/*! react-redux */ "./node_modules/react-red
   connect = _require2.connect;
 var _require3 = __webpack_require__(/*! react-bootstrap */ "./node_modules/react-bootstrap/esm/index.js"),
   Container = _require3.Container;
-var _require4 = __webpack_require__(/*! ../../utils/blockchainAPI */ "./src/main/js/utils/blockchainAPI.js"),
-  createProjectContract = _require4.createProjectContract;
-var _require5 = __webpack_require__(/*! ../../utils/web3Utils */ "./src/main/js/utils/web3Utils.js"),
-  getWalletAddress = _require5.getWalletAddress;
-var _require6 = __webpack_require__(/*! ../../actions/ProjectListings */ "./src/main/js/actions/ProjectListings.js"),
-  createProjectListingByUserID = _require6.createProjectListingByUserID;
+var _require4 = __webpack_require__(/*! ../../utils/web3Utils */ "./src/main/js/utils/web3Utils.js"),
+  getWalletAddress = _require4.getWalletAddress;
+var _require5 = __webpack_require__(/*! ../../actions/ProjectListings */ "./src/main/js/actions/ProjectListings.js"),
+  createProjectListingByUserID = _require5.createProjectListingByUserID;
 var ProjectListingForm = __webpack_require__(/*! ./ProjectListingForm */ "./src/main/js/pages/owner/ProjectListingForm.js");
 var NewProjectListing = function NewProjectListing(_ref) {
   var user = _ref.user,
@@ -93123,13 +93349,6 @@ var NewProjectListing = function NewProjectListing(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     error = _useState4[0],
     setError = _useState4[1];
-  var appendZeros = function appendZeros(amount, count) {
-    amount = amount.toString();
-    for (var i = 0; i < count; i++) {
-      amount = amount + "0";
-    }
-    return amount;
-  };
   var createProjectListing = function createProjectListing(formData) {
     dispatch(createProjectListingByUserID(user.id, formData)).then(function () {
       setError();
@@ -93141,7 +93360,7 @@ var NewProjectListing = function NewProjectListing(_ref) {
   };
   var createProjectListingHandler = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(formData) {
-      var walletAddress, listing, vinNumber, make, model, ccpg, fundingGoal, projectAddress;
+      var walletAddress;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -93160,40 +93379,22 @@ var NewProjectListing = function NewProjectListing(_ref) {
             setError("MetaMask is required to get your wallet address. Please install MetaMask.");
             return _context.abrupt("return");
           case 9:
-            // Parse form data
-            listing = JSON.parse(formData.get("listing"));
-            vinNumber = listing.vin;
-            make = listing.make;
-            model = listing.model;
-            ccpg = appendZeros(listing.ccpg, 18);
-            fundingGoal = appendZeros(listing.fundingGoal, 18); // Create project contract via backend API
-            _context.next = 17;
-            return createProjectContract({
-              vin: vinNumber,
-              make: make,
-              model: model,
-              ccpg: ccpg,
-              fundingGoal: fundingGoal,
-              ownerAddress: walletAddress
-            });
-          case 17:
-            projectAddress = _context.sent;
-            // Add to form data and save to database
+            // Add wallet address to form data (projectAddress will be created by admin on approval)
             formData.append("walletAddress", walletAddress);
-            formData.append("projectAddress", projectAddress);
+            // Note: projectAddress is not created here - it will be created by admin when approving
             createProjectListing(formData);
-            _context.next = 27;
+            _context.next = 17;
             break;
-          case 23:
-            _context.prev = 23;
+          case 13:
+            _context.prev = 13;
             _context.t0 = _context["catch"](0);
             console.error("Error creating project:", _context.t0);
-            setError(_context.t0.message || "Unable to create Project Listing contract");
-          case 27:
+            setError(_context.t0.message || "Unable to create project listing");
+          case 17:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[0, 23]]);
+      }, _callee, null, [[0, 13]]);
     }));
     return function createProjectListingHandler(_x) {
       return _ref2.apply(this, arguments);
@@ -94490,9 +94691,20 @@ var createInvestmentsByUserID = function createInvestmentsByUserID(userID, data)
     }, getAuthHeader())
   });
 };
+var createInvestmentsByUserIDWithTransaction = function createInvestmentsByUserIDWithTransaction(userID, data, transactionHash) {
+  var requestData = _objectSpread(_objectSpread({}, data), {}, {
+    transactionHash: transactionHash
+  });
+  return axios.post("http://localhost:8090/api/users/".concat(userID, "/investments/with-transaction"), requestData, {
+    headers: _objectSpread({
+      "Content-Type": "application/json"
+    }, getAuthHeader())
+  });
+};
 var InvestmentService = {
   getInvestmentsByUserID: getInvestmentsByUserID,
-  createInvestmentsByUserID: createInvestmentsByUserID
+  createInvestmentsByUserID: createInvestmentsByUserID,
+  createInvestmentsByUserIDWithTransaction: createInvestmentsByUserIDWithTransaction
 };
 module.exports = InvestmentService;
 
@@ -94637,8 +94849,6 @@ var createBaseRequest = __webpack_require__(/*! ../common/http-common */ "./src/
  * Backend Blockchain API Service
  * 
  * This service replaces the old web3Utils.js functions for admin operations.
- * All blockchain operations are now handled by the backend.
- * No MetaMask required for admin operations.
  */
 
 /**
@@ -94945,35 +95155,68 @@ var redistribute = /*#__PURE__*/function () {
 }();
 
 /**
- * Get token balance for an address
- * @param {string} address - Ethereum address
- * @returns {Promise<string>} Token balance
+ * Get redistribution details for a project
+ * @param {string} projectAddress - The project contract address
+ * @returns {Promise<Array>} Array of redistribution details
  */
-var getTokenBalance = /*#__PURE__*/function () {
-  var _ref9 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(address) {
+var getRedistributionDetails = /*#__PURE__*/function () {
+  var _ref9 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(projectAddress) {
     var response, _error$response9;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) switch (_context9.prev = _context9.next) {
         case 0:
           _context9.prev = 0;
           _context9.next = 3;
-          return createBaseRequest().get("/blockchain/balance/".concat(address));
+          return createBaseRequest().get("/blockchain/redistribution/".concat(projectAddress));
         case 3:
           response = _context9.sent;
-          return _context9.abrupt("return", response.data.toString());
+          return _context9.abrupt("return", response.data);
         case 7:
           _context9.prev = 7;
           _context9.t0 = _context9["catch"](0);
-          console.error("Error getting token balance:", _context9.t0);
-          throw new Error(((_error$response9 = _context9.t0.response) === null || _error$response9 === void 0 ? void 0 : _error$response9.data) || "Failed to get token balance");
+          console.error("Error getting redistribution details:", _context9.t0);
+          throw new Error(((_error$response9 = _context9.t0.response) === null || _error$response9 === void 0 ? void 0 : _error$response9.data) || "Failed to get redistribution details");
         case 11:
         case "end":
           return _context9.stop();
       }
     }, _callee9, null, [[0, 7]]);
   }));
-  return function getTokenBalance(_x14) {
+  return function getRedistributionDetails(_x14) {
     return _ref9.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get token balance for an address
+ * @param {string} address - Ethereum address
+ * @returns {Promise<string>} Token balance
+ */
+var getTokenBalance = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(address) {
+    var response, _error$response10;
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) switch (_context10.prev = _context10.next) {
+        case 0:
+          _context10.prev = 0;
+          _context10.next = 3;
+          return createBaseRequest().get("/blockchain/balance/".concat(address));
+        case 3:
+          response = _context10.sent;
+          return _context10.abrupt("return", response.data.toString());
+        case 7:
+          _context10.prev = 7;
+          _context10.t0 = _context10["catch"](0);
+          console.error("Error getting token balance:", _context10.t0);
+          throw new Error(((_error$response10 = _context10.t0.response) === null || _error$response10 === void 0 ? void 0 : _error$response10.data) || "Failed to get token balance");
+        case 11:
+        case "end":
+          return _context10.stop();
+      }
+    }, _callee10, null, [[0, 7]]);
+  }));
+  return function getTokenBalance(_x15) {
+    return _ref10.apply(this, arguments);
   };
 }();
 module.exports = {
@@ -94985,7 +95228,8 @@ module.exports = {
   openAuction: openAuction,
   setBuyer: setBuyer,
   redistribute: redistribute,
-  getTokenBalance: getTokenBalance
+  getTokenBalance: getTokenBalance,
+  getRedistributionDetails: getRedistributionDetails
 };
 
 /***/ }),
@@ -95040,12 +95284,8 @@ var createBaseRequest = __webpack_require__(/*! ../common/http-common */ "./src/
 var CCTOKEN_ABI = __webpack_require__(/*! ../contracts/abi/CCToken.json */ "./src/main/js/contracts/abi/CCToken.json");
 var FACTORY_ABI = __webpack_require__(/*! ../contracts/abi/CCProjectFactory.json */ "./src/main/js/contracts/abi/CCProjectFactory.json");
 var PROJECT_ABI = __webpack_require__(/*! ../contracts/abi/CCProject.json */ "./src/main/js/contracts/abi/CCProject.json");
-
-// Contract addresses - loaded dynamically from backend
 var CCTOKEN_ADDRESS = null;
 var FACTORY_ADDRESS = null;
-
-// Cache for contract addresses
 var contractAddressesPromise = null;
 
 /**
@@ -95114,7 +95354,7 @@ var fetchContractAddresses = /*#__PURE__*/function () {
 }();
 
 /**
- * Get contract addresses, fetching from backend if not already loaded
+ * Fetching contract addresses from backend if not already loaded
  */
 var getContractAddresses = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
@@ -95280,7 +95520,6 @@ var getCCTokenBalance = /*#__PURE__*/function () {
           _context4.prev = 68;
           _context4.t2 = _context4["catch"](0);
           console.error("Error getting token balance:", _context4.t2);
-          // Return a more descriptive error message
           errorMessage = _context4.t2.message || "Failed to get token balance. Make sure Hardhat node is running and MetaMask is connected to Localhost 8545 (Chain ID: 31337).";
           throw errorMessage;
         case 73:
@@ -95348,10 +95587,9 @@ var approveFunding = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context6.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          ccTokenContract = new ethers.Contract(addresses.token, CCTOKEN_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          ccTokenContract = new ethers.Contract(addresses.token, CCTOKEN_ABI, signer);
           _context6.next = 9;
           return ccTokenContract.increaseAllowance(projectAddress, appendZeros(amount, 18));
         case 9:
@@ -95388,7 +95626,6 @@ var createCCProjectContract = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context7.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
           factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
@@ -95403,7 +95640,7 @@ var createCCProjectContract = /*#__PURE__*/function () {
           return factoryContract.getProjects();
         case 16:
           projectAddresses = _context7.sent;
-          projectCount = projectAddresses.length; // MetaMask popup will appear when this transaction is sent
+          projectCount = projectAddresses.length;
           _context7.next = 20;
           return factoryContract.createNewProject(vinNumber, make, model, ccpg, fundingGoal, ownerAddress);
         case 20:
@@ -95457,10 +95694,9 @@ var approveCCProjectListing = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context8.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
           _context8.next = 9;
           return factoryContract.approveProject(projectAddress);
         case 9:
@@ -95497,10 +95733,9 @@ var saveEstCCProjectListing = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context9.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
           _context9.next = 9;
           return factoryContract.saveEstimations(projectAddress, valueEstimate, repairEstimate);
         case 9:
@@ -95537,10 +95772,9 @@ var setRestorerCCProjectListing = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context10.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
           _context10.next = 9;
           return factoryContract.setRestorer(projectAddress, restorerAddress, appendZeros(fundingGoal, 18));
         case 9:
@@ -95577,10 +95811,9 @@ var assignRestorationCCProjectListing = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context11.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
           _context11.next = 9;
           return factoryContract.assignForRestoration(projectAddress);
         case 9:
@@ -95617,10 +95850,9 @@ var openAuctionCCProjectListing = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context12.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
           _context12.next = 9;
           return factoryContract.setAuctionOpen(projectAddress);
         case 9:
@@ -95657,10 +95889,9 @@ var setBuyerCCProjectListing = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context13.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
           _context13.next = 9;
           return factoryContract.setBuyer(projectAddress, buyerAddress);
         case 9:
@@ -95697,10 +95928,9 @@ var redistributeCCProjectListing = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context14.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer); // MetaMask popup will appear when this transaction is sent
+          factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
           _context14.next = 9;
           return factoryContract.redistribute(projectAddress);
         case 9:
@@ -95737,7 +95967,6 @@ var updateCCProjectListing = /*#__PURE__*/function () {
           return getContractAddresses();
         case 3:
           addresses = _context15.sent;
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
           factoryContract = new ethers.Contract(addresses.factory, FACTORY_ABI, signer);
@@ -95746,7 +95975,7 @@ var updateCCProjectListing = /*#__PURE__*/function () {
           make = listing.make;
           model = listing.model;
           ccpg = appendZeros(listing.ccpg, 18);
-          fundingGoal = appendZeros(listing.fundingGoal, 18); // MetaMask popup will appear when this transaction is sent
+          fundingGoal = appendZeros(listing.fundingGoal, 18);
           _context15.next = 15;
           return factoryContract.editProjectDetails(projectAddress, vinNumber, make, model, ccpg, fundingGoal);
         case 15:
@@ -95774,7 +96003,7 @@ var updateCCProjectListing = /*#__PURE__*/function () {
 }();
 var investInCCProjectListing = /*#__PURE__*/function () {
   var _ref16 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee16(projectAddress, amount) {
-    var provider, signer, projectContract, tx;
+    var provider, signer, projectContract, tx, receipt;
     return _regeneratorRuntime().wrap(function _callee16$(_context16) {
       while (1) switch (_context16.prev = _context16.next) {
         case 0:
@@ -95782,10 +96011,9 @@ var investInCCProjectListing = /*#__PURE__*/function () {
           _context16.next = 3;
           return approveFunding(projectAddress, amount);
         case 3:
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          projectContract = new ethers.Contract(projectAddress, PROJECT_ABI, signer); // Second MetaMask popup will appear when this transaction is sent
+          projectContract = new ethers.Contract(projectAddress, PROJECT_ABI, signer);
           _context16.next = 8;
           return projectContract.acceptFunds(appendZeros(amount, 18));
         case 8:
@@ -95793,19 +96021,20 @@ var investInCCProjectListing = /*#__PURE__*/function () {
           _context16.next = 11;
           return tx.wait();
         case 11:
-          console.log(tx.hash);
-          _context16.next = 18;
-          break;
-        case 14:
-          _context16.prev = 14;
+          receipt = _context16.sent;
+          console.log("Investment transaction hash:", receipt.transactionHash);
+          // Return transaction hash for backend synchronization
+          return _context16.abrupt("return", receipt.transactionHash);
+        case 16:
+          _context16.prev = 16;
           _context16.t0 = _context16["catch"](0);
           console.log(_context16.t0);
           throw "Web3 Error!";
-        case 18:
+        case 20:
         case "end":
           return _context16.stop();
       }
-    }, _callee16, null, [[0, 14]]);
+    }, _callee16, null, [[0, 16]]);
   }));
   return function investInCCProjectListing(_x18, _x19) {
     return _ref16.apply(this, arguments);
@@ -95821,10 +96050,9 @@ var bidForCCProjectListing = /*#__PURE__*/function () {
           _context17.next = 3;
           return approveFunding(projectAddress, amount);
         case 3:
-          // Don't pre-request accounts - let MetaMask popup appear when transaction is sent
           provider = new ethers.providers.Web3Provider(window.ethereum, "any");
           signer = provider.getSigner();
-          projectContract = new ethers.Contract(projectAddress, PROJECT_ABI, signer); // Second MetaMask popup will appear when this transaction is sent
+          projectContract = new ethers.Contract(projectAddress, PROJECT_ABI, signer);
           _context17.next = 8;
           return projectContract.addNewAuctionBid(appendZeros(amount, 18));
         case 8:

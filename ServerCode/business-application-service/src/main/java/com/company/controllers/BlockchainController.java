@@ -49,7 +49,6 @@ public class BlockchainController {
                     .body("Error: vin, make, model, and ownerAddress are required");
             }
             
-            // Convert String to BigInteger (handles both string numbers and regular numbers from JSON)
             BigInteger ccpg;
             BigInteger fundingGoal;
             try {

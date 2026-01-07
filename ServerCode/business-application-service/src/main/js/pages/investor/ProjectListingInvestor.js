@@ -6,6 +6,7 @@ const { investInCCProjectListing } = require("../../utils/web3Utils");
 const MetaConnectModal = require("../../components/web3/MetaConnectModal");
 
 const { createInvestmentsByUserID } = require("../../actions/Investments");
+const { createInvestmentsByUserIDWithTransaction } = require("../../services/InvestmentsService");
 
 const ProjectListingInvestor = ({ dispatch, projectListing, user }) => {
   const [showModal, setShowModal] = useState(false);
@@ -25,26 +26,28 @@ const ProjectListingInvestor = ({ dispatch, projectListing, user }) => {
       setAmount("");
     };
 
+    let transactionHash = null;
     if (window.ethereum) {
-      await investInCCProjectListing(projectListing.projectAddress, amount);
-    } else {
-      setShowModal(true);
-      setError("Unable to make investment in Contract");
-      throw "Unable to make investment in Contract";
-    }
-
-    dispatch(createInvestmentsByUserID(user.id, investment))
-      .then(() => {
+      try {
+        // Execute blockchain transaction and get transaction hash
+        transactionHash = await investInCCProjectListing(projectListing.projectAddress, amount);
+        
+        // Use synchronized endpoint that verifies transaction and completes jBPM task
+        const response = await createInvestmentsByUserIDWithTransaction(user.id, investment, transactionHash);
+        
         clearFields();
         setError();
         setStatus(
           `Successfully created investment for listing ${projectListing.id}.`
         );
-      })
-      .catch((e) => {
-        console.log(e);
-        setError("Error creating investment.");
-      });
+      } catch (e) {
+        console.error("Investment error:", e);
+        setError(e.response?.data || e.message || "Error creating investment. Transaction may have failed.");
+      }
+    } else {
+      setShowModal(true);
+      setError("Unable to make investment in Contract");
+    }
   };
 
   const [amount, setAmount] = useState("");

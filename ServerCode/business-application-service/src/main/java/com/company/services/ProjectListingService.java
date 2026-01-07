@@ -23,10 +23,13 @@ import org.kie.internal.query.QueryFilter;
 import org.kie.api.task.model.TaskSummary;
 import com.company.enums.ProcessTaskNamesEnum;
 import com.company.services.ProcessListingService;
+import com.company.services.BlockchainService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +66,9 @@ public class ProjectListingService {
   @Autowired
   private ProcessListingService processListingService;
 
+  @Autowired
+  private BlockchainService blockchainService;
+
   private final String deploymentId = "Evaluation_1.0.0-SNAPSHOT";
 
   private final String processId = "Submission_Process.NewListing";
@@ -91,7 +97,10 @@ public class ProjectListingService {
 
     listingRequest.setUser(user);
     listingRequest.setOwnerAddress(ownerAddress);
-    listingRequest.setProjectAddress(projectAddress);
+    // projectAddress is optional - will be set by admin when approving
+    if (projectAddress != null && !projectAddress.isEmpty()) {
+      listingRequest.setProjectAddress(projectAddress);
+    }
 
     // Only process file if it's provided
     if (file != null && !file.isEmpty()) {
@@ -291,6 +300,47 @@ public class ProjectListingService {
     String message = listingRequest.getAdminMessage();
     if (message != null) {
       listing.setAdminMessage(message);
+    }
+
+    if (listing.getVerifyDetails() == true 
+        && listing.getReceiveTitle() == true
+        && (listing.getProjectAddress() == null || listing.getProjectAddress().isEmpty())) {
+      
+      try {
+        logger.info("Creating blockchain contract for approved project listing ID: {}", id);
+        BigInteger ccpg;
+        try {
+          BigDecimal ccpgDecimal = new BigDecimal(listing.getCCPG());
+          BigDecimal weiMultiplier = BigDecimal.valueOf(10).pow(18);
+          ccpg = ccpgDecimal.multiply(weiMultiplier).toBigInteger();
+        } catch (NumberFormatException e) {
+          throw new RuntimeException("Invalid CCPG format for project listing ID: " + id + " - " + e.getMessage());
+        }
+
+        Float fundingGoalFloat = listing.getFundingGoal();
+        if (fundingGoalFloat == null) {
+          throw new RuntimeException("Funding goal is null for project listing ID: " + id);
+        }
+        BigDecimal fundingGoalDecimal = BigDecimal.valueOf(fundingGoalFloat.doubleValue());
+        BigDecimal weiMultiplier = BigDecimal.valueOf(10).pow(18);
+        BigInteger fundingGoal = fundingGoalDecimal.multiply(weiMultiplier).toBigInteger();
+        
+        // Create project contract on blockchain
+        String projectAddress = blockchainService.createProjectContract(
+            listing.getVIN(),
+            listing.getMake(),
+            listing.getModel(),
+            ccpg,
+            fundingGoal,
+            listing.getOwnerAddress()
+        );
+        
+        listing.setProjectAddress(projectAddress);
+        logger.info("Successfully created blockchain contract for project listing ID: {} with address: {}", 
+            id, projectAddress);
+      } catch (Exception e) {
+        logger.error("Error creating blockchain contract for project listing ID: {} - {}", id, e.getMessage(), e);
+      }
     }
 
     listing = projectListingRepository.save(listing);

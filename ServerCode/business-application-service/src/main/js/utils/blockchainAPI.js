@@ -4,8 +4,6 @@ const createBaseRequest = require("../common/http-common");
  * Backend Blockchain API Service
  * 
  * This service replaces the old web3Utils.js functions for admin operations.
- * All blockchain operations are now handled by the backend.
- * No MetaMask required for admin operations.
  */
 
 /**
@@ -23,7 +21,7 @@ const createProjectContract = async (projectData) => {
       fundingGoal: projectData.fundingGoal,
       ownerAddress: projectData.ownerAddress
     });
-    return response.data; // Returns project address as string
+    return response.data; // Project address returned
   } catch (error) {
     console.error("Error creating project contract:", error);
     throw new Error(error.response?.data || "Failed to create project contract");

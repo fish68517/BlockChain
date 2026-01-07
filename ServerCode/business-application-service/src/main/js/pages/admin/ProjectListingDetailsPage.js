@@ -126,11 +126,30 @@ function ProjectListingDetails({ projectListings, dispatch }) {
     message = null
   ) => {
     try {
-      await approveProject(listing.projectAddress);
-      return onSubmitApproval(areDetailsVerified, isTitleReceived, message);
+      // First submit the review (backend will create blockchain contract if both are verified)
+      await onSubmitApproval(areDetailsVerified, isTitleReceived, message);
+      
+      // If both details are verified and title is received, wait a moment for backend to create contract
+      // Then approve the project on blockchain (if projectAddress exists)
+      if (areDetailsVerified && isTitleReceived) {
+        // Wait a bit for backend to create the contract
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Refresh listing to get updated projectAddress
+        const updatedListing = projectListings.find((p) => p.id === parseInt(id));
+        if (updatedListing && updatedListing.projectAddress) {
+          try {
+            await approveProject(updatedListing.projectAddress);
+          } catch (error) {
+            console.error("Error approving project on blockchain:", error);
+            // Don't throw - the project is already created, approval can be retried
+            setError("Project created but blockchain approval failed. You can retry approval later.");
+          }
+        }
+      }
     } catch (error) {
-      console.error("Error approving project:", error);
-      setError(error.message || "Unable to update approval in smart contract");
+      console.error("Error in approval process:", error);
+      setError(error.message || "Unable to complete approval process");
       throw error;
     }
   };

@@ -51,7 +51,6 @@ public class BlockchainServiceImpl implements BlockchainService {
     
     private String lastTransactionHash;
     
-    // Helper method to execute transaction
     private TransactionReceipt executeTransaction(Function function, String contractAddress) throws Exception {
         String encodedFunction = FunctionEncoder.encode(function);
         
@@ -80,7 +79,7 @@ public class BlockchainServiceImpl implements BlockchainService {
         // Poll for transaction receipt
         org.web3j.protocol.core.methods.response.TransactionReceipt receipt = null;
         int attempts = 0;
-        int maxAttempts = 40; // Wait up to ~2 minutes (40 * 3 seconds)
+        int maxAttempts = 40;
         
         while (attempts < maxAttempts) {
             org.web3j.protocol.core.methods.response.EthGetTransactionReceipt ethGetTransactionReceipt = 
@@ -91,7 +90,7 @@ public class BlockchainServiceImpl implements BlockchainService {
                 break;
             }
             
-            Thread.sleep(3000); // Wait 3 seconds before next attempt
+            Thread.sleep(3000);
             attempts++;
         }
         
@@ -114,12 +113,10 @@ public class BlockchainServiceImpl implements BlockchainService {
                                        BigInteger ccpg, BigInteger fundingGoal, 
                                        String ownerAddress) {
         try {
-            // Validate and ensure BigInteger values are not null
             if (ccpg == null ||fundingGoal == null || vin == null || make == null || model == null || ownerAddress == null) {
                 throw new IllegalArgumentException("All string parameters must be non-null");
             }
             
-            // Get the project count BEFORE sending the transaction
             Function getProjectsFunction = new Function(
                 "getProjects",
                 Collections.emptyList(),
@@ -152,10 +149,9 @@ public class BlockchainServiceImpl implements BlockchainService {
                     }
                 }
             } catch (Exception e) {
-                projectCountBefore = 0; // Assume 0 if we can't get it
+                projectCountBefore = 0;
             }
             
-            // Now send the transaction
             Function function = new Function(
                 "createNewProject",
                 Arrays.asList(
@@ -171,19 +167,16 @@ public class BlockchainServiceImpl implements BlockchainService {
             
             TransactionReceipt receipt = executeTransaction(function, factoryAddress);
             
-            // Check if transaction was successful
             String status = receipt.getStatus();
             if (status != null && !status.equals("0x1") && !status.equals("0x01")) {
                 throw new RuntimeException("Transaction failed with status: " + status + ". Transaction hash: " + receipt.getTransactionHash());
             }
             
-            // Wait a moment for state to update
             Thread.sleep(500);
             
-            // Poll getProjects() until the count increases (max 10 attempts)
             for (int attempt = 0; attempt < 10; attempt++) {
                 if (attempt > 0) {
-                    Thread.sleep(1000); // Wait 1 second between attempts (not before first attempt)
+                    Thread.sleep(1000); 
                 }
                 
                 EthCall response = web3j.ethCall(
@@ -212,7 +205,6 @@ public class BlockchainServiceImpl implements BlockchainService {
                         if (projects != null && !projects.isEmpty()) {
                             int currentCount = projects.size();
                             
-                            // If count increased, return the new project
                             if (currentCount > projectCountBefore) {
                                 String projectAddress = projects.get(projects.size() - 1).getValue();
                                 logger.info("Created project at address: {}", projectAddress);
@@ -436,6 +428,40 @@ public class BlockchainServiceImpl implements BlockchainService {
     @Override
     public String getTransactionHash() {
         return lastTransactionHash;
+    }
+    
+    @Override
+    public boolean verifyTransaction(String transactionHash) {
+        try {
+            TransactionReceipt receipt = getTransactionReceipt(transactionHash);
+            if (receipt == null) {
+                return false;
+            }
+            
+            // Transaction status- "0x1"=success, "0x0"=failure
+            String status = receipt.getStatus();
+            return status != null && !status.equals("0x0") && !status.equals("0x00");
+        } catch (Exception e) {
+            logger.error("Error verifying transaction: {}", transactionHash, e);
+            return false;
+        }
+    }
+    
+    @Override
+    public TransactionReceipt getTransactionReceipt(String transactionHash) {
+        try {
+            org.web3j.protocol.core.methods.response.EthGetTransactionReceipt ethGetTransactionReceipt = 
+                web3j.ethGetTransactionReceipt(transactionHash).send();
+            
+            if (ethGetTransactionReceipt.getTransactionReceipt().isPresent()) {
+                return ethGetTransactionReceipt.getTransactionReceipt().get();
+            }
+            
+            return null;
+        } catch (Exception e) {
+            logger.error("Error getting transaction receipt: {}", transactionHash, e);
+            return null;
+        }
     }
 }
 

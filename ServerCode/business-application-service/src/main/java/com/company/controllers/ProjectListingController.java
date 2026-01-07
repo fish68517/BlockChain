@@ -32,7 +32,7 @@ public class ProjectListingController {
   @PostMapping("/users/{userId}/projectListings")
   public ResponseEntity<ProjectListing> createProjectListing(
       @RequestPart("walletAddress") String ownerAddress,
-      @RequestPart("projectAddress") String projectAddress,
+      @RequestPart(value = "projectAddress", required = false) String projectAddress,
       @RequestPart(value = "titleFile", required = false) MultipartFile file,
       @RequestPart("listing") String listingString,
       @PathVariable(value = "userId") Long userId) {

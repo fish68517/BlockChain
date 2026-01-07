@@ -4,7 +4,6 @@ import java.math.BigInteger;
 
 public interface BlockchainService {
     
-    // Admin operations using server-side wallet
     String createProjectContract(String vin, String make, String model, 
                                  BigInteger ccpg, BigInteger fundingGoal, 
                                  String ownerAddress);
@@ -25,11 +24,24 @@ public interface BlockchainService {
     
     void editProjectDetails(String projectAddress, String vin, String make, 
                            String model, BigInteger ccpg, BigInteger fundingGoal);
-    
-    // State queries
+
     BigInteger getTokenBalance(String address);
     
     String getTransactionHash();
+    
+    /**
+     * Verify a blockchain transaction by hash
+     * @param transactionHash The transaction hash to verify
+     * @return true if transaction exists and was successful, false otherwise
+     */
+    boolean verifyTransaction(String transactionHash);
+    
+    /**
+     * Get transaction receipt for a given transaction hash
+     * @param transactionHash The transaction hash
+     * @return TransactionReceipt if found, null otherwise
+     */
+    org.web3j.protocol.core.methods.response.TransactionReceipt getTransactionReceipt(String transactionHash);
 }
 
 

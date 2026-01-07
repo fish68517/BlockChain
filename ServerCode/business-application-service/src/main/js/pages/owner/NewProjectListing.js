@@ -2,7 +2,6 @@ const React = require("react");
 const { useState } = require("react");
 const { connect } = require("react-redux");
 const { Container } = require("react-bootstrap");
-const { createProjectContract } = require("../../utils/blockchainAPI");
 const { getWalletAddress } = require("../../utils/web3Utils");
 
 const {
@@ -14,13 +13,6 @@ const NewProjectListing = ({ user, dispatch }) => {
   const [status, setStatus] = useState();
   const [error, setError] = useState();
 
-  const appendZeros = (amount, count) => {
-    amount = amount.toString();
-    for (let i = 0; i < count; i++) {
-      amount = amount + "0";
-    }
-    return amount;
-  };
 
   const createProjectListing = (formData) => {
     dispatch(createProjectListingByUserID(user.id, formData))
@@ -36,7 +28,6 @@ const NewProjectListing = ({ user, dispatch }) => {
 
   const createProjectListingHandler = async (formData) => {
     try {
-      // Get owner wallet address (still need this from user's MetaMask for the owner field)
       let walletAddress;
       if (window.ethereum) {
         walletAddress = await getWalletAddress();
@@ -45,31 +36,13 @@ const NewProjectListing = ({ user, dispatch }) => {
         return;
       }
 
-      // Parse form data
-      const listing = JSON.parse(formData.get("listing"));
-      const vinNumber = listing.vin;
-      const make = listing.make;
-      const model = listing.model;
-      const ccpg = appendZeros(listing.ccpg, 18);
-      const fundingGoal = appendZeros(listing.fundingGoal, 18);
-
-      // Create project contract via backend API
-      const projectAddress = await createProjectContract({
-        vin: vinNumber,
-        make: make,
-        model: model,
-        ccpg: ccpg,
-        fundingGoal: fundingGoal,
-        ownerAddress: walletAddress
-      });
-
-      // Add to form data and save to database
+      // Add wallet address to form data (projectAddress will be created by admin on approval)
       formData.append("walletAddress", walletAddress);
-      formData.append("projectAddress", projectAddress);
+      // Note: projectAddress is not created here - it will be created by admin when approving
       createProjectListing(formData);
     } catch (error) {
       console.error("Error creating project:", error);
-      setError(error.message || "Unable to create Project Listing contract");
+      setError(error.message || "Unable to create project listing");
     }
   };
 
