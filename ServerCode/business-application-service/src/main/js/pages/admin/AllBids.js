@@ -3,7 +3,6 @@ const { connect } = require("react-redux");
 const { Button } = require("react-bootstrap");
 const { setRestorer } = require("../../utils/blockchainAPI");
 
-// Helper function to append zeros (convert to wei)
 const appendZeros = (amount, count) => {
   amount = amount.toString();
   for (let i = 0; i < count; i++) {
@@ -40,7 +39,6 @@ class AllBids extends React.Component {
   // change the status of bid listing once it gets selected
   async handleSelectBtn(id, biddingPrice, restorerAddress, projectAddress) {
     try {
-      // Convert bidding price to wei (18 decimals) - smart contract expects funding goal in wei
       const fundingGoalWei = appendZeros(biddingPrice, 18);
       
       await setRestorer(projectAddress, restorerAddress, fundingGoalWei);

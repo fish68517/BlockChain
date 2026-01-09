@@ -29,10 +29,7 @@ const ProjectListingInvestor = ({ dispatch, projectListing, user }) => {
     let transactionHash = null;
     if (window.ethereum) {
       try {
-        // Execute blockchain transaction and get transaction hash
         transactionHash = await investInCCProjectListing(projectListing.projectAddress, amount);
-        
-        // Use synchronized endpoint that verifies transaction and completes jBPM task
         const response = await createInvestmentsByUserIDWithTransaction(user.id, investment, transactionHash);
         
         clearFields();
@@ -42,7 +39,7 @@ const ProjectListingInvestor = ({ dispatch, projectListing, user }) => {
         );
       } catch (e) {
         console.error("Investment error:", e);
-        setError(e.response?.data || e.message || "Error creating investment. Transaction may have failed.");
+        setError(e.response?.data || e.message || "Error creating investment.");
       }
     } else {
       setShowModal(true);

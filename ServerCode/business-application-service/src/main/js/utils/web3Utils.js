@@ -1,53 +1,14 @@
 const { ethers } = require("ethers");
-const createBaseRequest = require("../common/http-common");
+
+const CCTOKEN_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const FACTORY_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 
 const CCTOKEN_ABI = require("../contracts/abi/CCToken.json");
 const FACTORY_ABI = require("../contracts/abi/CCProjectFactory.json");
 const PROJECT_ABI = require("../contracts/abi/CCProject.json");
 
-let CCTOKEN_ADDRESS = null;
-let FACTORY_ADDRESS = null;
-let contractAddressesPromise = null;
 
-/**
- * Fetch contract addresses from backend API
- * These are read from application.properties server-side
- */
-const fetchContractAddresses = async () => {
-  if (contractAddressesPromise) {
-    return contractAddressesPromise;
-  }
-
-  contractAddressesPromise = (async () => {
-    try {
-      const response = await createBaseRequest().get("/api/blockchain/config/contracts");
-      CCTOKEN_ADDRESS = response.data.tokenAddress;
-      FACTORY_ADDRESS = response.data.factoryAddress;
-      console.log("Contract addresses loaded from backend:", {
-        token: CCTOKEN_ADDRESS,
-        factory: FACTORY_ADDRESS
-      });
-      return { token: CCTOKEN_ADDRESS, factory: FACTORY_ADDRESS };
-    } catch (error) {
-      console.error("Error fetching contract addresses from backend:", error);
-      // Fallback to hardcoded values if API call fails
-      CCTOKEN_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-      FACTORY_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-      console.warn("Using fallback contract addresses");
-      return { token: CCTOKEN_ADDRESS, factory: FACTORY_ADDRESS };
-    }
-  })();
-
-  return contractAddressesPromise;
-};
-
-/**
- * Fetching contract addresses from backend if not already loaded
- */
-const getContractAddresses = async () => {
-  if (!CCTOKEN_ADDRESS || !FACTORY_ADDRESS) {
-    await fetchContractAddresses();
-  }
+const getContractAddresses = () => {
   return {
     token: CCTOKEN_ADDRESS,
     factory: FACTORY_ADDRESS
@@ -56,62 +17,10 @@ const getContractAddresses = async () => {
 
 const getCCTokenBalance = async () => {
   try {
-    // To ensure contract addresses are loaded first
-    const addresses = await getContractAddresses();
+    const addresses = getContractAddresses();
     const tokenAddress = addresses.token;
     
     await window.ethereum.request({ method: "eth_requestAccounts" });
-    
-    // Get chain ID directly from MetaMask first
-    const chainIdHex = await window.ethereum.request({ method: "eth_chainId" });
-    const chainId = parseInt(chainIdHex, 16);
-    const expectedChainId = 31337; // Hardhat local network
-    
-    console.log("MetaMask Chain ID:", chainId, "Expected:", expectedChainId);
-    
-    if (chainId !== expectedChainId) {
-      // Try to switch network automatically
-      try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x7A69' }], // 31337 in hex
-        });
-        // Wait a moment for network to switch
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // Check again
-        const newChainIdHex = await window.ethereum.request({ method: "eth_chainId" });
-        const newChainId = parseInt(newChainIdHex, 16);
-        if (newChainId !== expectedChainId) {
-          throw new Error(`Please switch to Hardhat Local network (Chain ID: ${expectedChainId}). Current network: Chain ID ${newChainId}`);
-        }
-      } catch (switchError) {
-        if (switchError.code === 4902) {
-          try {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId: '0x7A69', // 31337 in hex
-                chainName: 'Hardhat Local',
-                nativeCurrency: {
-                  name: 'Ethereum',
-                  symbol: 'ETH',
-                  decimals: 18
-                },
-                rpcUrls: ['http://127.0.0.1:8545'],
-                blockExplorerUrls: null
-              }],
-            });
-            // Wait a moment for network to be added and switched
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          } catch (addError) {
-            throw new Error(`Please manually switch to Hardhat Local network (Chain ID: ${expectedChainId}). Current network: Chain ID ${chainId}. Error: ${addError.message}`);
-          }
-        } else {
-          throw new Error(`Please switch to Hardhat Local network (Chain ID: ${expectedChainId}). Current network: Chain ID ${chainId}. Error: ${switchError.message}`);
-        }
-      }
-    }
-    
     const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
@@ -136,8 +45,7 @@ const getCCTokenBalance = async () => {
     return await ethers.utils.formatEther(tokens, decimals);
   } catch (ex) {
     console.error("Error getting token balance:", ex);
-    const errorMessage = ex.message || "Failed to get token balance. Make sure Hardhat node is running and MetaMask is connected to Localhost 8545 (Chain ID: 31337).";
-    throw errorMessage;
+    throw "Web3 Error!";
   }
 };
 
@@ -167,12 +75,13 @@ const getWalletAddress = async () => {
 
 const approveFunding = async (projectAddress, amount) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
-    const provider = new ethers.providers.Web3Provider(
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const ccTokenContract = new ethers.Contract(
       addresses.token,
@@ -193,12 +102,13 @@ const approveFunding = async (projectAddress, amount) => {
 
 const createCCProjectContract = async (formData) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
-    const provider = new ethers.providers.Web3Provider(
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -245,13 +155,14 @@ const createCCProjectContract = async (formData) => {
 
 const approveCCProjectListing = async (projectAddress) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
   
-    const provider = new ethers.providers.Web3Provider(
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -274,13 +185,14 @@ const saveEstCCProjectListing = async (
   repairEstimate
 ) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
     
-    const provider = new ethers.providers.Web3Provider(
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -308,13 +220,14 @@ const setRestorerCCProjectListing = async (
   fundingGoal
 ) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
     
-    const provider = new ethers.providers.Web3Provider(
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -338,13 +251,14 @@ const setRestorerCCProjectListing = async (
 
 const assignRestorationCCProjectListing = async (projectAddress) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
     
-    const provider = new ethers.providers.Web3Provider(
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -364,13 +278,14 @@ const assignRestorationCCProjectListing = async (projectAddress) => {
 
 const openAuctionCCProjectListing = async (projectAddress) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
     
-    const provider = new ethers.providers.Web3Provider(
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -390,13 +305,14 @@ const openAuctionCCProjectListing = async (projectAddress) => {
 
 const setBuyerCCProjectListing = async (projectAddress, buyerAddress) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
     
-    const provider = new ethers.providers.Web3Provider(
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -416,13 +332,14 @@ const setBuyerCCProjectListing = async (projectAddress, buyerAddress) => {
 
 const redistributeCCProjectListing = async (projectAddress) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
     
-    const provider = new ethers.providers.Web3Provider(
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -442,13 +359,13 @@ const redistributeCCProjectListing = async (projectAddress) => {
 
 const updateCCProjectListing = async (projectAddress, formData) => {
   try {
-    // To ensure contract addresses are loaded
-    const addresses = await getContractAddresses();
-    
-    const provider = new ethers.providers.Web3Provider(
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const addresses = getContractAddresses();
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const factoryContract = new ethers.Contract(
       addresses.factory,
@@ -482,11 +399,12 @@ const updateCCProjectListing = async (projectAddress, formData) => {
 const investInCCProjectListing = async (projectAddress, amount) => {
   try {
     await approveFunding(projectAddress, amount);
-    
-    const provider = new ethers.providers.Web3Provider(
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const projectContract = new ethers.Contract(
       projectAddress,
@@ -498,7 +416,6 @@ const investInCCProjectListing = async (projectAddress, amount) => {
     const receipt = await tx.wait();
 
     console.log("Investment transaction hash:", receipt.transactionHash);
-    // Return transaction hash for backend synchronization
     return receipt.transactionHash;
   } catch (ex) {
     console.log(ex);
@@ -509,11 +426,12 @@ const investInCCProjectListing = async (projectAddress, amount) => {
 const bidForCCProjectListing = async (projectAddress, amount) => {
   try {
     await approveFunding(projectAddress, amount);
-    
-    const provider = new ethers.providers.Web3Provider(
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const provider = await new ethers.providers.Web3Provider(
       window.ethereum,
       "any"
     );
+    provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const projectContract = new ethers.Contract(
       projectAddress,

@@ -36,9 +36,7 @@ const NewProjectListing = ({ user, dispatch }) => {
         return;
       }
 
-      // Add wallet address to form data (projectAddress will be created by admin on approval)
       formData.append("walletAddress", walletAddress);
-      // Note: projectAddress is not created here - it will be created by admin when approving
       createProjectListing(formData);
     } catch (error) {
       console.error("Error creating project:", error);
@@ -52,7 +50,7 @@ const NewProjectListing = ({ user, dispatch }) => {
     <Container>
       <div className="my-4">
         <h3>Create New Project Listing</h3>
-        <p className="text-muted">Submit your vehicle project to start the restoration process</p>
+        <p className="text-muted">Submit your car project to start the restoration process</p>
       </div>
       <div className="card">
         <div className="card-body">

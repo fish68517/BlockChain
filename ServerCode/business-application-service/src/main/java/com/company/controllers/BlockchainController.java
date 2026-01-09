@@ -1,7 +1,6 @@
 package com.company.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +10,6 @@ import com.company.request.CreateProjectBlockchainRequest;
 import com.company.request.EditProjectBlockchainRequest;
 
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/blockchain")
@@ -20,12 +17,6 @@ public class BlockchainController {
     
     @Autowired
     private BlockchainService blockchainService;
-    
-    @Value("${blockchain.contract.token.address}")
-    private String tokenAddress;
-    
-    @Value("${blockchain.contract.factory.address}")
-    private String factoryAddress;
     
     @PostMapping("/admin/create-project")
     public ResponseEntity<String> createProject(
@@ -194,18 +185,6 @@ public class BlockchainController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-    
-    /**
-     * Get contract addresses from application.properties
-     * This endpoint allows the frontend to dynamically load contract addresses
-     */
-    @GetMapping("/config/contracts")
-    public ResponseEntity<Map<String, String>> getContractAddresses() {
-        Map<String, String> config = new HashMap<>();
-        config.put("tokenAddress", tokenAddress);
-        config.put("factoryAddress", factoryAddress);
-        return ResponseEntity.ok(config);
     }
 }
 

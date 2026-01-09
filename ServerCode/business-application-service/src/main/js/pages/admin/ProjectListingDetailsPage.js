@@ -20,7 +20,6 @@ const StartAuction = require("../../components/admin/StartAuction");
 const AssignRestoration = require("../../components/admin/AssignRestoration");
 const ProjectListingStatus = require("../../components/common/ProjectListingStatus");
 
-// Helper function to append zeros (convert to wei)
 const appendZeros = (amount, count) => {
   amount = amount.toString();
   for (let i = 0; i < count; i++) {
@@ -126,13 +125,10 @@ function ProjectListingDetails({ projectListings, dispatch }) {
     message = null
   ) => {
     try {
-      // First submit the review (backend will create blockchain contract if both are verified)
+      // Submit for review
       await onSubmitApproval(areDetailsVerified, isTitleReceived, message);
-      
-      // If both details are verified and title is received, wait a moment for backend to create contract
-      // Then approve the project on blockchain (if projectAddress exists)
+     
       if (areDetailsVerified && isTitleReceived) {
-        // Wait a bit for backend to create the contract
         await new Promise(resolve => setTimeout(resolve, 2000));
         
         // Refresh listing to get updated projectAddress
@@ -142,8 +138,7 @@ function ProjectListingDetails({ projectListings, dispatch }) {
             await approveProject(updatedListing.projectAddress);
           } catch (error) {
             console.error("Error approving project on blockchain:", error);
-            // Don't throw - the project is already created, approval can be retried
-            setError("Project created but blockchain approval failed. You can retry approval later.");
+            setError("Error approving project on blockchain");
           }
         }
       }
