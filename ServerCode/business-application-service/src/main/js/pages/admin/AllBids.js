@@ -1,15 +1,6 @@
 const React = require("react");
 const { connect } = require("react-redux");
 const { Button } = require("react-bootstrap");
-const { setRestorer } = require("../../utils/blockchainAPI");
-
-const appendZeros = (amount, count) => {
-  amount = amount.toString();
-  for (let i = 0; i < count; i++) {
-    amount = amount + "0";
-  }
-  return amount;
-};
 
 const Modal = require("../../components/common/Modal");
 const { getAllBids, selectBid } = require("../../actions/BidListings");
@@ -37,17 +28,15 @@ class AllBids extends React.Component {
   }
 
   // change the status of bid listing once it gets selected
-  async handleSelectBtn(id, biddingPrice, restorerAddress, projectAddress) {
-    try {
-      const fundingGoalWei = appendZeros(biddingPrice, 18);
-      
-      await setRestorer(projectAddress, restorerAddress, fundingGoalWei);
-      this.props.dispatch(selectBid(id));
-      this.setState({ error: null });
-    } catch (error) {
-      console.error("Error setting restorer:", error);
-      this.setState({ error: error.message || "Unable to set the selected restorer" });
-    }
+  handleSelectBtn(id, biddingPrice, restorerAddress, projectAddress) {
+    this.props.dispatch(selectBid(id))
+      .then(() => {
+        this.setState({ error: null });
+      })
+      .catch((error) => {
+        console.error("Error setting restorer:", error);
+        this.setState({ error: error.message || "Unable to set the selected restorer" });
+      });
   }
 
   componentDidMount() {

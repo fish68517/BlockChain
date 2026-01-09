@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thoughtworks.xstream.mapper.Mapper.Null;
 import com.company.models.ProjectListing;
 import com.company.models.File;
 import com.company.models.User;
@@ -338,8 +337,18 @@ public class ProjectListingService {
         listing.setProjectAddress(projectAddress);
         logger.info("Successfully created blockchain contract for project listing ID: {} with address: {}", 
             id, projectAddress);
+        
+        // Approve project on blockchain after creation
+        try {
+          blockchainService.approveProject(projectAddress);
+          logger.info("Successfully approved project on blockchain: {}", projectAddress);
+        } catch (Exception e) {
+          logger.error("Error approving project on blockchain: {}", projectAddress, e);
+          throw new RuntimeException("Blockchain approval failed: " + e.getMessage(), e);
+        }
       } catch (Exception e) {
         logger.error("Error creating blockchain contract for project listing ID: {} - {}", id, e.getMessage(), e);
+        throw new RuntimeException("Blockchain operation failed: " + e.getMessage(), e);
       }
     }
 
@@ -381,6 +390,28 @@ public class ProjectListingService {
       processUtility.completeTask(valueEstimationTaskId, "wbadmin", params);
     } catch (Exception e) {
       logger.error("Error In Adding Value Estimation: Completing Task: " + e.getMessage());
+      throw new RuntimeException("Failed to complete jBPM task", e);
+    }
+
+    // Execute blockchain operation (AFTER jBPM, but in same method)
+    if (listing.getProjectAddress() != null && !listing.getProjectAddress().isEmpty()) {
+      try {
+        BigDecimal valueEstDecimal = BigDecimal.valueOf(listingRequest.getValueEstimation().doubleValue());
+        BigDecimal repairEstDecimal = BigDecimal.valueOf(listingRequest.getRepairCostEstimation().doubleValue());
+        BigDecimal weiMultiplier = BigDecimal.valueOf(10).pow(18);
+        BigInteger valueEst = valueEstDecimal.multiply(weiMultiplier).toBigInteger();
+        BigInteger repairEst = repairEstDecimal.multiply(weiMultiplier).toBigInteger();
+        
+        blockchainService.saveEstimations(
+            listing.getProjectAddress(), 
+            valueEst, 
+            repairEst
+        );
+        logger.info("Blockchain operation succeeded for value estimation");
+      } catch (Exception e) {
+        logger.error("Blockchain operation failed for value estimation", e);
+        throw new RuntimeException("Blockchain operation failed: " + e.getMessage(), e);
+      }
     }
 
     try {
@@ -416,6 +447,18 @@ public class ProjectListingService {
       processUtility.completeTask(assignRestorationTaskId, "wbadmin", params);
     } catch (Exception e) {
       logger.error("Error In Assigning Restoration: " + e.getMessage());
+      throw new RuntimeException("Failed to complete jBPM task", e);
+    }
+
+    // Execute blockchain operation (AFTER jBPM, but in same method)
+    if (listing.getProjectAddress() != null && !listing.getProjectAddress().isEmpty()) {
+      try {
+        blockchainService.assignRestoration(listing.getProjectAddress());
+        logger.info("Blockchain operation succeeded for assign restoration");
+      } catch (Exception e) {
+        logger.error("Blockchain operation failed for assign restoration", e);
+        throw new RuntimeException("Blockchain operation failed: " + e.getMessage(), e);
+      }
     }
 
     try {
@@ -523,6 +566,18 @@ public class ProjectListingService {
       processUtility.completeTask(auctionTaskId, "BuyerOne", params);
     } catch (Exception e) {
       logger.error("Error In Starting Auction: Completing Task: " + e.getMessage());
+      throw new RuntimeException("Failed to complete jBPM task", e);
+    }
+
+    // Execute blockchain operation (AFTER jBPM, but in same method)
+    if (listing.getProjectAddress() != null && !listing.getProjectAddress().isEmpty()) {
+      try {
+        blockchainService.openAuction(listing.getProjectAddress());
+        logger.info("Blockchain operation succeeded for open auction");
+      } catch (Exception e) {
+        logger.error("Blockchain operation failed for open auction", e);
+        throw new RuntimeException("Blockchain operation failed: " + e.getMessage(), e);
+      }
     }
 
     try {

@@ -3,10 +3,6 @@ const { connect } = require("react-redux");
 const { Button } = require("react-bootstrap");
 
 const Modal = require("../../components/common/Modal");
-const {
-  setBuyer,
-  redistribute,
-} = require("../../utils/blockchainAPI");
 
 const {
   getAllAuctionBids,
@@ -36,16 +32,15 @@ class AllAuctionBids extends React.Component {
   }
 
   // change the status of bid listing once it gets selected
-  async handleSelectBtn(id, buyerAddress, projectAddress) {
-    try {
-      await setBuyer(projectAddress, buyerAddress);
-      await redistribute(projectAddress);
-      this.props.dispatch(selectAuctionBid(id));
-      this.setState({ error: null });
-    } catch (error) {
-      console.error("Error setting buyer and redistributing:", error);
-      this.setState({ error: error.message || "Unable to set the selected buyer" });
-    }
+  handleSelectBtn(id, buyerAddress, projectAddress) {
+    this.props.dispatch(selectAuctionBid(id))
+      .then(() => {
+        this.setState({ error: null });
+      })
+      .catch((error) => {
+        console.error("Error setting buyer and redistributing:", error);
+        this.setState({ error: error.message || "Unable to set the selected buyer" });
+      });
   }
 
   componentDidMount() {

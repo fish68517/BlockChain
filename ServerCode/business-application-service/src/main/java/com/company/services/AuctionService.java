@@ -14,8 +14,10 @@ import com.company.enums.ProcessTaskNamesEnum;
 import com.company.models.ProcessResponse;
 import com.company.services.ProcessListingService;
 import com.company.repositories.ProjectListingRepository;
+import com.company.services.BlockchainService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.math.BigInteger;
 
 @Service
 public class AuctionService {
@@ -35,6 +37,9 @@ public class AuctionService {
 
   @Autowired
   private ProjectListingRepository projectListingRepository;
+
+  @Autowired
+  private BlockchainService blockchainService;
 
   public List<AuctionBid> getAuctionBidListingByBuyerId(Long buyerId) {
     return auctionBidRepository.findByBuyerId(buyerId);
@@ -103,6 +108,23 @@ public class AuctionService {
     webSocketService.sendListingUpdated(listing);
     webSocketService.sendAuctionBidApproved(auctionBid);
 
+    // Execute blockchain operations (set buyer and redistribute)
+    if (listing.getProjectAddress() != null && !listing.getProjectAddress().isEmpty() 
+        && auctionBid.getBuyerAddress() != null && !auctionBid.getBuyerAddress().isEmpty()) {
+      try {
+        // Set buyer on blockchain
+        blockchainService.setBuyer(listing.getProjectAddress(), auctionBid.getBuyerAddress());
+        logger.info("Blockchain operation succeeded for set buyer");
+        
+        // Redistribute funds on blockchain
+        blockchainService.redistribute(listing.getProjectAddress());
+        logger.info("Blockchain operation succeeded for redistribute");
+      } catch (Exception e) {
+        logger.error("Blockchain operation failed for set buyer/redistribute", e);
+        throw new RuntimeException("Blockchain operation failed: " + e.getMessage(), e);
+      }
+    }
+
     listing.setIsRedistributed(true);
 
     System.out.println("REDISTRIBUTION " + listing.toString());
@@ -115,9 +137,10 @@ public class AuctionService {
     try {
       Long redistributionTaskId = processUtility.getTaskIdByProcessIdAndTitle(instanceId,
           ProcessTaskNamesEnum.redistribution);
-      processUtility.completeTask(redistributionTaskId, "wbadmin", params);
+      processUtility.completeTask(redistributionTaskId, "wbadmin", params2);
     } catch (Exception e) {
       logger.error("Error In Selecting Bidding For Listing: Completing Redistribution Task: " + e.getMessage());
+      throw new RuntimeException("Failed to complete jBPM task", e);
     }
 
     try {

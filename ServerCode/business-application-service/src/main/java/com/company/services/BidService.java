@@ -17,6 +17,9 @@ import com.company.ServerApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.company.models.ProcessResponse;
+import com.company.services.BlockchainService;
+import java.math.BigInteger;
+import java.math.BigDecimal;
 
 @Service
 public class BidService {
@@ -36,6 +39,9 @@ public class BidService {
   @Autowired
   private WebSocketService webSocketService;
 
+  @Autowired
+  private BlockchainService blockchainService;
+
   public List<Bidding> getBidListingByBidderId(Long bidderId) {
     return biddingRepository.findByBidderId(bidderId);
   }
@@ -48,6 +54,33 @@ public class BidService {
     request.setBidderId(bidderId);
     request.setCategory("car");
     Bidding bid = biddingRepository.save(request);
+    
+    ProjectListing listing = projectListingRepository.findById(bid.getListingId())
+        .orElseThrow(() -> new ResourceNotFoundException("No listing found with ID = " + bid.getListingId()));
+      
+    Long instanceId = listing.getProcessId();
+      Map<String, Object> params = new HashMap<>();
+      params.put("biddingPrice", bid.getBiddingPrice());
+      params.put("bidderId", bid.getBidderId());
+      params.put("category", bid.getCategory());
+      
+      try {
+        Long restorationBidTaskId = processUtility.getTaskIdByProcessIdAndTitle(instanceId,
+            ProcessTaskNamesEnum.restorationBid);
+        processUtility.completeTask(restorationBidTaskId, "RestoreOne", params);
+      } catch (Exception e) {
+        logger.error("Error In Creating Bid: Completing Task:", e.getMessage());
+      }
+      
+      try {
+        List<ProcessResponse> taskResponses = processUtility.getPendingTasksByProcessId(instanceId);
+        List<String> pendingTasks = processListingService.convertProcessResponseToString(taskResponses);
+        listing.setPendingTasks(pendingTasks);
+        projectListingRepository.save(listing);
+      } catch (Exception e) {
+        logger.error("Error In Creating Bid: Getting Pending Tasks:", e.getMessage());
+      }
+    
     webSocketService.sendBidCreated(bid);
     return bid;
   }
@@ -95,6 +128,27 @@ public class BidService {
       processUtility.completeTask(bidReviewTaskId, "wbadmin", params);
     } catch (Exception e) {
       logger.error("Error In Selecting Bid: Completing Task: " + e.getMessage());
+      throw new RuntimeException("Failed to complete jBPM task", e);
+    }
+
+    // Execute blockchain operation (AFTER jBPM, but in same method)
+    if (listing.getProjectAddress() != null && !listing.getProjectAddress().isEmpty() 
+        && bid.getRestorerAddress() != null && !bid.getRestorerAddress().isEmpty()) {
+      try {
+        BigDecimal fundingGoalDecimal = BigDecimal.valueOf(bid.getBiddingPrice().doubleValue());
+        BigDecimal weiMultiplier = BigDecimal.valueOf(10).pow(18);
+        BigInteger fundingGoal = fundingGoalDecimal.multiply(weiMultiplier).toBigInteger();
+        
+        blockchainService.setRestorer(
+            listing.getProjectAddress(),
+            bid.getRestorerAddress(),
+            fundingGoal
+        );
+        logger.info("Blockchain operation succeeded for set restorer");
+      } catch (Exception e) {
+        logger.error("Blockchain operation failed for set restorer", e);
+        throw new RuntimeException("Blockchain operation failed: " + e.getMessage(), e);
+      }
     }
 
     try {

@@ -20,20 +20,6 @@ const StartAuction = require("../../components/admin/StartAuction");
 const AssignRestoration = require("../../components/admin/AssignRestoration");
 const ProjectListingStatus = require("../../components/common/ProjectListingStatus");
 
-const appendZeros = (amount, count) => {
-  amount = amount.toString();
-  for (let i = 0; i < count; i++) {
-    amount = amount + "0";
-  }
-  return amount;
-};
-
-const {
-  approveProject,
-  saveEstimations,
-  assignRestoration: assignRestorationBlockchain,
-  openAuction,
-} = require("../../utils/blockchainAPI");
 
 function ProjectListingDetails({ projectListings, dispatch }) {
   const { id } = useParams();
@@ -59,94 +45,51 @@ function ProjectListingDetails({ projectListings, dispatch }) {
       });
   };
 
-  const onSubmitEstimations = (valueEstimation, repairCost) => {
+  const onSubmitEstimationsHandler = (valueEstimation, repairCost) => {
     return dispatch(
       addValueEstimation(id, {
         valueEstimation,
         repairCostEstimation: repairCost,
       })
-    );
-  };
-
-  const onSubmitEstimationsHandler = async (valueEstimation, repairCost) => {
-    try {
-      // Convert to wei (18 decimals) - smart contract expects values in wei
-      const valueEstWei = appendZeros(valueEstimation, 18);
-      const repairCostWei = appendZeros(repairCost, 18);
-      
-      await saveEstimations(listing.projectAddress, valueEstWei, repairCostWei);
-      return onSubmitEstimations(valueEstimation, repairCost);
-    } catch (error) {
+    ).catch((error) => {
       console.error("Error saving estimations:", error);
-      setError(error.message || "Unable to update estimations in smart contract");
+      setError(error.message || "Unable to update estimations");
       throw error;
-    }
+    });
   };
 
-  const onAssignRestoration = async () => {
-    try {
-      await assignRestorationBlockchain(listing.projectAddress);
-      return dispatch(assignRestoration(id));
-    } catch (error) {
+  const onAssignRestoration = () => {
+    return dispatch(assignRestoration(id)).catch((error) => {
       console.error("Error assigning restoration:", error);
-      setError(error.message || "Unable to assign restoration in smart contract");
+      setError(error.message || "Unable to assign restoration");
       throw error;
-    }
+    });
   };
 
   const onPostItemForSale = () => {
     return dispatch(postItemForSale(id));
   };
 
-  const onStartAuction = async () => {
-    try {
-      await openAuction(listing.projectAddress);
-      return dispatch(startAuction(id));
-    } catch (error) {
+  const onStartAuction = () => {
+    return dispatch(startAuction(id)).catch((error) => {
       console.error("Error starting auction:", error);
-      setError(error.message || "Unable to start auction in smart contract");
+      setError(error.message || "Unable to start auction");
       throw error;
-    }
+    });
   };
 
-  const onSubmitApproval = (areDetailsVerified, isTitleReceived, message) => {
+  const onSubmitApprovalHandler = (areDetailsVerified, isTitleReceived, message = null) => {
     return dispatch(
       submitReview(id, {
         verifyDetails: areDetailsVerified,
         receiveTitle: isTitleReceived,
         adminMessage: message,
       })
-    );
-  };
-
-  const onSubmitApprovalHandler = async (
-    areDetailsVerified,
-    isTitleReceived,
-    message = null
-  ) => {
-    try {
-      // Submit for review
-      await onSubmitApproval(areDetailsVerified, isTitleReceived, message);
-     
-      if (areDetailsVerified && isTitleReceived) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Refresh listing to get updated projectAddress
-        const updatedListing = projectListings.find((p) => p.id === parseInt(id));
-        if (updatedListing && updatedListing.projectAddress) {
-          try {
-            await approveProject(updatedListing.projectAddress);
-          } catch (error) {
-            console.error("Error approving project on blockchain:", error);
-            setError("Error approving project on blockchain");
-          }
-        }
-      }
-    } catch (error) {
+    ).catch((error) => {
       console.error("Error in approval process:", error);
       setError(error.message || "Unable to complete approval process");
       throw error;
-    }
+    });
   };
 
   const onSubmitReject = () => {
