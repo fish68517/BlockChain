@@ -10,7 +10,7 @@ import "./CCProject.sol";
  * @dev Deploys a new CC Project
  */
 contract CCProjectFactory is Ownable {
-    CCToken token;
+    ICCToken token;
     CCProject[] public projectAddresses;
 
     event ProjectCreated(CCProject project);
@@ -25,7 +25,7 @@ contract CCProjectFactory is Ownable {
     
     constructor(address _ccTokenAddress)
     {
-        token = CCToken(_ccTokenAddress);
+        token = ICCToken(_ccTokenAddress);
     }
     
     function createNewProject(

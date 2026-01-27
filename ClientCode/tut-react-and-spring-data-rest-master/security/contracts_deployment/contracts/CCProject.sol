@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "./SafeMath.sol";
 import "./Ownable.sol";
 
-interface CCToken {
+interface ICCToken {
     function balanceOf(address account) external view returns (uint256);
     function approve(address spender, uint256 amount) external returns (bool);
     function transfer(address recipient, uint256 amount) external returns (bool);
@@ -23,7 +23,7 @@ interface CCToken {
 contract CCProject is Ownable{
     using SafeMath for uint;
     
-    CCToken token;
+    ICCToken token;
     bool public fundingLive;
     bool public isApproved;
     bool public openAuction;
@@ -84,7 +84,7 @@ contract CCProject is Ownable{
         ccpg = _ccpg;
         fundingGoal = _fundingGoal;
         ownerAddress = _ownerAddress;
-        token = CCToken(_ccTokenAddress);
+        token = ICCToken(_ccTokenAddress);
 
         fundingLive = false;
         factoryAddress = msg.sender;
