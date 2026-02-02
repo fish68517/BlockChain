@@ -1,0 +1,33 @@
+const { ethers } = require("hardhat");
+
+async function main() {
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying contracts with the account:", deployer.address);
+
+  // 1. 部署 CCToken
+  const CCToken = await ethers.getContractFactory("CCToken");
+  const ccToken = await CCToken.deploy();
+  await ccToken.waitForDeployment(); // v6 写法
+  const ccTokenAddress = await ccToken.getAddress(); // v6 获取地址写法
+  console.log("CCToken deployed to:", ccTokenAddress);
+
+  // 2. 部署 CCProjectFactory
+  // 注意：这里假设 Factory 的构造函数需要传入 Token 地址。如果报错，请告诉我 Factory 的构造参数。
+  const CCProjectFactory = await ethers.getContractFactory("CCProjectFactory");
+  const ccProjectFactory = await CCProjectFactory.deploy(ccTokenAddress);
+  await ccProjectFactory.waitForDeployment();
+  const factoryAddress = await ccProjectFactory.getAddress();
+  console.log("CCProjectFactory deployed to:", factoryAddress);
+
+  // 3. 部署 CCDNFT (新需求)
+  const CCDNFT = await ethers.getContractFactory("CCDNFT");
+  const ccDNFT = await CCDNFT.deploy(); // 如果 CCDNFT 需要参数，请填在这里
+  await ccDNFT.waitForDeployment();
+  const nftAddress = await ccDNFT.getAddress();
+  console.log("CCDNFT deployed to:", nftAddress);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

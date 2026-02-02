@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "mcp__time__get_current_time",
+      "Bash(copy \"C:\\\\Users\\\\86155\\\\Desktop\\\\单子\\\\2026\\\\1.28区块链\\\\workflows\\\\NewListing.bpmn\" \"C:\\\\Users\\\\86155\\\\Desktop\\\\单子\\\\2026\\\\1.28区块链\\\\workflows\\\\NewListing.bpmn.backup\")",
+      "Bash(npm install)",
+      "Bash(npx hardhat test:*)",
+      "Bash(where:*)",
+      "Bash(findstr:*)",
+      "Bash(mysql:*)",
+      "Bash(mvn spring-boot:run:*)",
+      "Bash(timeout /t 15 /nobreak)",
+      "Bash(ping:*)",
+      "Bash(curl:*)",
+      "Bash(powershell -Command \"Invoke-WebRequest -Uri ''http://localhost:8080/api/listings'' -UseBasicParsing | Select-Object -ExpandProperty Content\")",
+      "Bash(pnpm create:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(pnpm exec tailwindcss:*)",
+      "Bash(./mvnw compile:*)",
+      "Bash(mvn compile:*)",
+      "Bash(pnpm build:*)",
+      "Bash(timeout 10 pnpm dev:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(timeout 8 pnpm dev:*)",
+      "Bash(pnpm run build:*)",
+      "Bash(java:*)",
+      "Bash(mvn:*)",
+      "Bash(pnpm dev)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\86155\\\\Desktop\\\\单子\\\\2026\\\\1.28区块链\" -Depth 2)",
+      "Bash(Select-Object FullName)",
+      "mcp__ace-tool__enhance_prompt",
+      "mcp__ace-tool__search_context"
+    ]
+  }
+}

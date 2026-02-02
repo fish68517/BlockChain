@@ -1,14 +1,134 @@
 <!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8"/>
-    <title>CollectorCoin Client</title>
-    <link href="/css/bootstrap5.2.0/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/main.css" />
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🔗 后端监听器测试控制台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js" type="application/javascript"></script>
+    
+    <style>
+        body { background-color: #f8f9fa; padding-top: 50px; }
+        .card { box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        #console-log { background: #212529; color: #00ff00; font-family: monospace; height: 300px; overflow-y: scroll; padding: 15px; border-radius: 5px; }
+    </style>
 </head>
 <body>
-  <div id="react"></div>
-	<script src="/js/bootstrap5.2.0/bootstrap.bundle.min.js"></script>
-	<script src="/built/bundle.js"></script>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>📡 第一阶段验证：打通“顺风耳”</h4>
+                </div>
+                <div class="card-body">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Factory Contract Address (工厂合约地址)</label>
+                        <input type="text" class="form-control" id="factoryAddress" placeholder="0x..." value="">
+                        <div class="form-text">请填入 deploy-cc.js 部署后生成的 Factory 地址</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-warning" onclick="connectWallet()">
+                            🦊 第一步：连接 MetaMask (Connect Wallet)
+                        </button>
+                        
+                        <button class="btn btn-success disabled" id="triggerBtn" onclick="triggerBlockchainEvent()">
+                            🚀 第二步：发射信号 (Trigger Event)（因为前端没有准备好，本来这一步是由后端在“第一步”提交任务时自动发起的。但现在我们手动触发来验证流程通断。）
+                        </button>
+                    </div>
+
+                    <hr>
+                    <label class="form-label">前端日志 (Frontend Logs):</label>
+                    <div id="console-log">等待操作...</div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-3">
+                <strong>验证方法：</strong> 点击“发射信号”后，请立即观察 <code>Java 后端控制台</code>。如果看到闪电图标 ⚡️，说明后端监听成功！
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let provider;
+    let signer;
+    let contract;
+
+    // 简单的日志工具
+    function log(message) {
+        const consoleDiv = document.getElementById('console-log');
+        const time = new Date().toLocaleTimeString();
+        consoleDiv.innerHTML += `<div>[${time}] ${message}</div>`;
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    }
+
+    // 1. 连接钱包
+    async function connectWallet() {
+        if (!window.ethereum) {
+            alert("请安装 MetaMask!");
+            return;
+        }
+
+        try {
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            await provider.send("eth_requestAccounts", []);
+            signer = provider.getSigner();
+            const address = await signer.getAddress();
+            
+            log(`✅ 钱包已连接: ${address}`);
+            log(`📡 网络ID: ${(await provider.getNetwork()).chainId} (确保是 31337 或 1337)`);
+            
+            document.getElementById('triggerBtn').classList.remove('disabled');
+        } catch (error) {
+            log(`❌ 连接失败: ${error.message}`);
+        }
+    }
+
+    // 2. 触发链上事件
+    async function triggerBlockchainEvent() {
+        const addressInput = document.getElementById('factoryAddress').value;
+        if (!addressInput || addressInput.length !== 42) {
+            alert("请先填写正确的合约地址！");
+            return;
+        }
+
+        // 最小化的 ABI，只需要 createNewProject 函数
+        const abi = [
+            "function createNewProject(string _vin, string _make, string _model, uint256 _ccpg, uint256 _fundingGoal, address _ownerAddress) external returns (address)",
+            "event ProjectCreated(address project)"
+        ];
+
+        try {
+            contract = new ethers.Contract(addressInput, abi, signer);
+            log("⏳ 正在发起交易 (请在 MetaMask 中确认)...");
+
+            // 发起一笔真实的交易
+            // 参数随便填，只要能触发事件就行
+            const tx = await contract.createNewProject(
+                "TEST-VIN-" + Math.floor(Math.random() * 10000), // 随机VIN
+                "TestMake", 
+                "TestModel", 
+                100, 
+                1000, 
+                await signer.getAddress()
+            );
+
+            log(`➡️ 交易已发送! Hash: ${tx.hash}`);
+            log("⏳ 等待区块确认...");
+
+            await tx.wait();
+            
+            log("✅ 交易已上链! (Event Emitted)");
+            log("👀 👉 快去看 Java 后端控制台有没有反应！！");
+
+        } catch (error) {
+            console.error(error);
+            log(`❌ 交易失败: ${error.message || error.data?.message}`);
+        }
+    }
+</script>
 </body>
 </html>

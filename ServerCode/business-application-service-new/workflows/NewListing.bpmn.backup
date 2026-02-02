@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                   xmlns:tns="http://www.jboss.org/drools"
+                   id="Definitions_1"
+                   targetNamespace="http://www.jboss.org/drools">
+
+  <bpmn2:process id="NewListing" name="New Listing Process" isExecutable="true"
+                 tns:packageName="com.collectorcoin.workflow">
+
+    <!-- Process Variables -->
+    <bpmn2:property id="listingId" itemSubjectRef="xsd:long"/>
+    <bpmn2:property id="projectAddress" itemSubjectRef="xsd:string"/>
+    <bpmn2:property id="tokenId" itemSubjectRef="xsd:long"/>
+    <bpmn2:property id="status" itemSubjectRef="xsd:string"/>
+
+    <!-- Start Event -->
+    <bpmn2:startEvent id="StartEvent_1" name="New Listing Created">
+      <bpmn2:outgoing>Flow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+
+    <!-- Task: Detail Verification -->
+    <bpmn2:userTask id="Task_DetailVerification" name="Detail Verification">
+      <bpmn2:incoming>Flow_1</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_2</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="TaskInput_1" name="listingId"/>
+        <bpmn2:dataOutput id="TaskOutput_1" name="verified"/>
+      </bpmn2:ioSpecification>
+    </bpmn2:userTask>
+
+    <!-- Gateway: Verification Result -->
+    <bpmn2:exclusiveGateway id="Gateway_Verification" name="Verified?">
+      <bpmn2:incoming>Flow_2</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_3_Yes</bpmn2:outgoing>
+      <bpmn2:outgoing>Flow_3_No</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+
+    <!-- Task: Value Estimation -->
+    <bpmn2:userTask id="Task_ValueEstimation" name="Value Estimation">
+      <bpmn2:incoming>Flow_3_Yes</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_4</bpmn2:outgoing>
+    </bpmn2:userTask>
+
+    <!-- Task: Bid Review (Original Position - Before Funding) -->
+    <bpmn2:userTask id="Task_BidReview" name="Bid Review">
+      <bpmn2:incoming>Flow_4</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_5</bpmn2:outgoing>
+    </bpmn2:userTask>
+
+    <!-- Task: Funding -->
+    <bpmn2:userTask id="Task_Funding" name="Funding">
+      <bpmn2:incoming>Flow_5</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_6</bpmn2:outgoing>
+    </bpmn2:userTask>
+
+    <!-- Task: Restoration -->
+    <bpmn2:userTask id="Task_Restoration" name="Restoration">
+      <bpmn2:incoming>Flow_6</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_7</bpmn2:outgoing>
+    </bpmn2:userTask>
+
+    <!-- Task: Auction -->
+    <bpmn2:userTask id="Task_Auction" name="Auction">
+      <bpmn2:incoming>Flow_7</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_8</bpmn2:outgoing>
+    </bpmn2:userTask>
+
+    <!-- Task: Auction Review -->
+    <bpmn2:userTask id="Task_AuctionReview" name="Auction Review">
+      <bpmn2:incoming>Flow_8</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_9</bpmn2:outgoing>
+    </bpmn2:userTask>
+
+    <!-- End Event: Completed -->
+    <bpmn2:endEvent id="EndEvent_Completed" name="Listing Completed">
+      <bpmn2:incoming>Flow_9</bpmn2:incoming>
+    </bpmn2:endEvent>
+
+    <!-- End Event: Rejected -->
+    <bpmn2:endEvent id="EndEvent_Rejected" name="Listing Rejected">
+      <bpmn2:incoming>Flow_3_No</bpmn2:incoming>
+    </bpmn2:endEvent>
+
+    <!-- Sequence Flows -->
+    <bpmn2:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_DetailVerification"/>
+    <bpmn2:sequenceFlow id="Flow_2" sourceRef="Task_DetailVerification" targetRef="Gateway_Verification"/>
+    <bpmn2:sequenceFlow id="Flow_3_Yes" name="Yes" sourceRef="Gateway_Verification" targetRef="Task_ValueEstimation">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">#{verified == true}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_3_No" name="No" sourceRef="Gateway_Verification" targetRef="EndEvent_Rejected">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">#{verified == false}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="Flow_4" sourceRef="Task_ValueEstimation" targetRef="Task_BidReview"/>
+    <bpmn2:sequenceFlow id="Flow_5" sourceRef="Task_BidReview" targetRef="Task_Funding"/>
+    <bpmn2:sequenceFlow id="Flow_6" sourceRef="Task_Funding" targetRef="Task_Restoration"/>
+    <bpmn2:sequenceFlow id="Flow_7" sourceRef="Task_Restoration" targetRef="Task_Auction"/>
+    <bpmn2:sequenceFlow id="Flow_8" sourceRef="Task_Auction" targetRef="Task_AuctionReview"/>
+    <bpmn2:sequenceFlow id="Flow_9" sourceRef="Task_AuctionReview" targetRef="EndEvent_Completed"/>
+
+  </bpmn2:process>
+
+</bpmn2:definitions>

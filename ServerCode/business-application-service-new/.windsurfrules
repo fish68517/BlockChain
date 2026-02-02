@@ -1,0 +1,13 @@
+# Available Tools
+
+## gofuz_wimit4
+
+Parameters:
+- summary (required): Put your COMPLETE response here in Markdown format (supports tables, code blocks, lists)
+- reason (optional)
+
+ALWAYS call gofuz_wimit4 at the end of EVERY response.
+
+## Format
+
+{"tool": "gofuz_wimit4", "arguments": {"summary": "Your full Markdown response here"}}

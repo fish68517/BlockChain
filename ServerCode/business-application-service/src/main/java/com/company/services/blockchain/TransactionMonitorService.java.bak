@@ -1,0 +1,156 @@
+package com.company.services.blockchain;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Service;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.DefaultBlockParameter;
+import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.protocol.core.methods.response.EthLog;
+import org.web3j.protocol.http.HttpService;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 区块链事件监听服务 (Debug Version)
+ * 包含极其详细的日志，用于分析为什么“没反应”。
+ */
+@Service
+public class TransactionMonitorService implements CommandLineRunner {
+
+    @Value("${blockchain.network.url}")
+    private String networkUrl;
+
+    @Value("${blockchain.contract.factory.address}")
+    private String factoryAddress;
+
+    private Web3j web3j;
+    
+    // 记录上次处理到的区块
+    private BigInteger lastProcessedBlock = BigInteger.ZERO;
+    
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    @Override
+    public void run(String... args) throws Exception {
+        System.out.println("\n\n");
+        System.out.println("==================================================");
+        System.out.println(">>> 🕵️ [调试模式] TransactionMonitorService 启动中...");
+        System.out.println(">>> 🎯 目标节点 URL: " + networkUrl);
+        System.out.println(">>> 🏠 监听合约地址: " + factoryAddress);
+        System.out.println("==================================================");
+
+        initBlockchainConnection();
+    }
+
+    private void initBlockchainConnection() {
+        try {
+            System.out.println(">>> 1. 正在建立 Web3j 连接...");
+            this.web3j = Web3j.build(new HttpService(networkUrl));
+
+            // 测试连接
+            String clientVersion = web3j.web3ClientVersion().send().getWeb3ClientVersion();
+            System.out.println(">>>    连接成功! 节点版本: " + clientVersion);
+
+            // 获取当前区块高度
+            BigInteger currentBlock = web3j.ethBlockNumber().send().getBlockNumber();
+            System.out.println(">>> 2. 当前链上最新区块高度: " + currentBlock);
+            
+            // 为了测试，我们故意把起始区块往前调 100 个，确保能扫到历史数据
+            // 如果 currentBlock < 100, 就从 0 开始
+            BigInteger startBlock = currentBlock.subtract(BigInteger.valueOf(100));
+            if (startBlock.compareTo(BigInteger.ZERO) < 0) startBlock = BigInteger.ZERO;
+
+            this.lastProcessedBlock = startBlock;
+            System.out.println(">>> 3. 设置扫描起始点: " + lastProcessedBlock + " (回溯 100 个区块)");
+
+            startPolling();
+
+        } catch (Exception e) {
+            System.err.println(">>> ❌ 初始化失败 (严重): " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void startPolling() {
+        System.out.println(">>> 4. 启动轮询定时器 (每 5 秒执行一次)...");
+        System.out.println(">>> --------------------------------------------------");
+
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                // 打印一个简单的心跳，证明定时器还活着
+                // System.out.print("."); 
+                checkForEvents();
+            } catch (Exception e) {
+                System.err.println("\n>>> ❌ 轮询循环异常: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }, 1000, 5000, TimeUnit.MILLISECONDS);
+    }
+
+    private void checkForEvents() {
+        try {
+            // 1. 获取最新区块
+            BigInteger latestBlock = web3j.ethBlockNumber().send().getBlockNumber();
+
+            // 详细日志：显示当前进度
+            System.out.println(String.format("[心跳] 链上最新: %d | 上次处理: %d | 状态: %s", 
+                latestBlock, 
+                lastProcessedBlock,
+                (latestBlock.compareTo(lastProcessedBlock) > 0 ? "🟢 有新区块" : "⚪ 等待中")
+            ));
+
+            if (latestBlock.compareTo(lastProcessedBlock) <= 0) {
+                return; // 没有新区块，跳过
+            }
+
+            // 2. 定义查询范围 (From -> To)
+            BigInteger fromBlock = lastProcessedBlock.add(BigInteger.ONE);
+            BigInteger toBlock = latestBlock;
+
+            System.out.println(String.format(">>> 🔍 发起查询: 区块 [%d] -> [%d] | 合约: %s", 
+                fromBlock, toBlock, factoryAddress));
+
+            EthFilter filter = new EthFilter(
+                    DefaultBlockParameter.valueOf(fromBlock),
+                    DefaultBlockParameter.valueOf(toBlock),
+                    factoryAddress
+            );
+
+            // 3. 执行查询
+            List<EthLog.LogResult> logs = web3j.ethGetLogs(filter).send().getLogs();
+
+            System.out.println(">>>    查询结果: 发现 " + logs.size() + " 条日志");
+
+            // 4. 处理每一条日志
+            for (EthLog.LogResult logResult : logs) {
+                org.web3j.protocol.core.methods.response.Log log = 
+                    (org.web3j.protocol.core.methods.response.Log) logResult.get();
+                
+                printEventLog(log);
+            }
+
+            // 5. 更新进度 (非常重要)
+            lastProcessedBlock = latestBlock;
+
+        } catch (IOException e) {
+            System.err.println(">>> ⚠️ 网络/IO 错误: " + e.getMessage());
+        }
+    }
+
+    private void printEventLog(org.web3j.protocol.core.methods.response.Log log) {
+        System.out.println("\n");
+        System.out.println("⚡⚡⚡⚡⚡⚡ [捕获到事件!] ⚡⚡⚡⚡⚡⚡");
+        System.out.println(">>> 交易哈希: " + log.getTransactionHash());
+        System.out.println(">>> 区块高度: " + log.getBlockNumber());
+        System.out.println(">>> 事件地址: " + log.getAddress());
+        System.out.println(">>> 数据Data: " + log.getData());
+        System.out.println(">>> Topics:   " + log.getTopics());
+        System.out.println(">>> --------------------------------------------------\n");
+    }
+}

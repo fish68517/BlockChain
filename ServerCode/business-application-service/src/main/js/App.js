@@ -1,4 +1,7 @@
 "use strict";
+// 手动填补 process 环境，防止 Web3 库崩溃
+import process from 'process';
+window.process = process;
 
 const React = require("react");
 const { BrowserRouter } = require("react-router-dom");

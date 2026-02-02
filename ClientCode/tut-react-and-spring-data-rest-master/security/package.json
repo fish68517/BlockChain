@@ -47,7 +47,7 @@
     "validator": "^13.7.0"
   },
   "scripts": {
-    "watch": "webpack --watch -d --output ./target/classes/static/built/bundle.js"
+    "watch": "webpack --watch --mode development"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",

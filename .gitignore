@@ -1,3 +1,14 @@
 **/node_modules/
 target/
 .mvn/
+
+# 忽略所有目录下的 node_modules 文件夹（通用规则）
+node_modules/
+
+# 保留你原有 .gitignore 中的其他规则（如果有）
+# 以下是常见的补充规则（可选，按需添加）
+.DS_Store
+*.log
+.vscode/
+*.txt
+Uploads/
