@@ -1,23 +1,30 @@
-const axios = require("axios");
-const API_URL = "http://localhost:8090/api/auth/";
+const createBaseRequest = require("../common/http-common"); // 使用我们加强过的 http 工具
 
 class AuthService {
   login(username, password) {
-    console.log("login", username, password);
-    return axios.post(API_URL + "signin", { username, password });
+    console.log(">>> [AuthService] 正在尝试登录:", username);
+    // 使用 createBaseRequest() 自动带上日志拦截器
+    return createBaseRequest().post("/auth/signin", {
+      username,
+      password,
+    });
   }
 
   logout() {
-    return axios.post(API_URL + "signout");
+    return createBaseRequest().post("/auth/signout");
   }
 
   register(username, email, password, role) {
-    return axios.post(API_URL + "signup", {
+    return createBaseRequest().post("/auth/signup", {
       username,
       email,
       password,
       role,
     });
+  }
+
+  getCurrentUser() {
+    return JSON.parse(localStorage.getItem('user'));;
   }
 }
 

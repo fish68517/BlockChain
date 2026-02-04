@@ -81450,40 +81450,42 @@ var connectWallet = function connectWallet() {
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context3.prev = 0;
+            // 打印
+            console.log("Connecting wallet...");
+            _context3.prev = 1;
             if (isMetaMaskInstalled()) {
-              _context3.next = 3;
+              _context3.next = 4;
               break;
             }
             throw new Error("MetaMask not installed");
-          case 3:
-            _context3.next = 5;
+          case 4:
+            _context3.next = 6;
             return connectMetaMask();
-          case 5:
+          case 6:
             walletAddress = _context3.sent;
-            _context3.next = 8;
+            _context3.next = 9;
             return WalletAuthService.checkWalletExists(walletAddress);
-          case 8:
+          case 9:
             response = _context3.sent;
             console.log(response.data.exists);
             return _context3.abrupt("return", {
               walletAddress: walletAddress,
               //   isRegistered: response.data.exists
-              isRegistered: true
+              isRegistered: false
             });
-          case 13:
-            _context3.prev = 13;
-            _context3.t0 = _context3["catch"](0);
+          case 14:
+            _context3.prev = 14;
+            _context3.t0 = _context3["catch"](1);
             dispatch({
               type: SET_MESSAGE,
               payload: _context3.t0.message || "Failed to connect wallet"
             });
             throw _context3.t0;
-          case 17:
+          case 18:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[0, 13]]);
+      }, _callee3, null, [[1, 14]]);
     }));
     return function (_x2) {
       return _ref3.apply(this, arguments);
@@ -81659,12 +81661,40 @@ var _require = __webpack_require__(/*! ../utils/auth */ "./src/main/js/utils/aut
   getAuthHeader = _require.getAuthHeader;
 function createBaseRequest() {
   var authHeader = getAuthHeader();
-  return axios.create({
+
+  // 1. 创建 Axios 实例
+  var instance = axios.create({
     baseURL: "http://localhost:8090/api",
+    // 确保这是你的后端基础路径
     headers: _objectSpread({
       "Content-type": "application/json"
     }, authHeader)
   });
+
+  // 2. [新增] 请求拦截器 - 打印出发前的请求
+  instance.interceptors.request.use(function (config) {
+    console.log(">>> \uD83D\uDE80 [Request] ".concat(config.method.toUpperCase(), " ").concat(config.url), config.data || config.params || "");
+    return config;
+  }, function (error) {
+    console.error(">>> ❌ [Request Error]", error);
+    return Promise.reject(error);
+  });
+
+  // 3. [新增] 响应拦截器 - 打印回来的响应
+  instance.interceptors.response.use(function (response) {
+    console.log(">>> \u2705 [Response] ".concat(response.config.url), response.data);
+    return response;
+  }, function (error) {
+    // 重点捕捉这里！这里会显示后端返回的 HTML 报错页面内容
+    if (error.response) {
+      console.error(">>> \u274C [Response Error] Status: ".concat(error.response.status, " | URL: ").concat(error.config.url));
+      console.error(">>> ❌ [Error Data]:", error.response.data); // <--- 这里会打印出具体的报错网页代码
+    } else {
+      console.error(">>> ❌ [Network Error]", error.message);
+    }
+    return Promise.reject(error);
+  });
+  return instance;
 }
 module.exports = createBaseRequest;
 
@@ -82035,6 +82065,12 @@ function ValueEstimation(_ref) {
     if (!valueEstimation || !repairCost) {
       return;
     }
+
+    // === 添加这行日志 ===
+    console.log("🚀 [Frontend] Admin 点击保存估值:", {
+      valueEstimation: valueEstimation,
+      repairCost: repairCost
+    });
     saveEstimations(valueEstimation, repairCost).then(function () {
       setMessage("Saved!");
     })["catch"](function () {
@@ -83146,26 +83182,28 @@ function WalletLogin(props) {
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
+            // 打印
+            console.log("handleWalletLogin：", address);
             setLoading(true);
             setErrorMessage("");
-            _context3.prev = 2;
+            _context3.prev = 3;
             dispatch = props.dispatch;
-            _context3.next = 6;
+            _context3.next = 7;
             return dispatch(walletLogin(address || walletAddress));
-          case 6:
+          case 7:
             navigate("/");
-            _context3.next = 13;
+            _context3.next = 14;
             break;
-          case 9:
-            _context3.prev = 9;
-            _context3.t0 = _context3["catch"](2);
+          case 10:
+            _context3.prev = 10;
+            _context3.t0 = _context3["catch"](3);
             setErrorMessage(_context3.t0.message || "Login failed");
             setLoading(false);
-          case 13:
+          case 14:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[2, 9]]);
+      }, _callee3, null, [[3, 10]]);
     }));
     return function handleWalletLogin(_x) {
       return _ref3.apply(this, arguments);
@@ -86260,8 +86298,7 @@ function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = 
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-var API_URL = "http://localhost:8090/api/auth/";
+var createBaseRequest = __webpack_require__(/*! ../common/http-common */ "./src/main/js/common/http-common.js"); // 使用我们加强过的 http 工具
 var AuthService = /*#__PURE__*/function () {
   function AuthService() {
     _classCallCheck(this, AuthService);
@@ -86269,8 +86306,9 @@ var AuthService = /*#__PURE__*/function () {
   return _createClass(AuthService, [{
     key: "login",
     value: function login(username, password) {
-      console.log("login", username, password);
-      return axios.post(API_URL + "signin", {
+      console.log(">>> [AuthService] 正在尝试登录:", username);
+      // 使用 createBaseRequest() 自动带上日志拦截器
+      return createBaseRequest().post("/auth/signin", {
         username: username,
         password: password
       });
@@ -86278,17 +86316,23 @@ var AuthService = /*#__PURE__*/function () {
   }, {
     key: "logout",
     value: function logout() {
-      return axios.post(API_URL + "signout");
+      return createBaseRequest().post("/auth/signout");
     }
   }, {
     key: "register",
     value: function register(username, email, password, role) {
-      return axios.post(API_URL + "signup", {
+      return createBaseRequest().post("/auth/signup", {
         username: username,
         email: email,
         password: password,
         role: role
       });
+    }
+  }, {
+    key: "getCurrentUser",
+    value: function getCurrentUser() {
+      return JSON.parse(localStorage.getItem('user'));
+      ;
     }
   }]);
 }();
@@ -86492,6 +86536,7 @@ function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = 
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var createBaseRequest = __webpack_require__(/*! ../common/http-common */ "./src/main/js/common/http-common.js");
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var API_URL = "http://localhost:8090/api/auth/";
 var WalletAuthService = /*#__PURE__*/function () {
@@ -86501,9 +86546,10 @@ var WalletAuthService = /*#__PURE__*/function () {
   return _createClass(WalletAuthService, [{
     key: "getNonce",
     value:
-    // Get nonce message for wallet to sign
-    function getNonce(walletAddress) {
-      return axios.get(API_URL + "wallet/nonce/" + walletAddress);
+    // 获取随机数 Nonce
+    function getNonce(publicAddress) {
+      // 这种写法对应 @PathVariable，完美匹配后端 /nonce/{address}
+      return createBaseRequest().get("/auth/wallet/nonce/".concat(publicAddress));
     }
 
     // Check if wallet is already registered
@@ -86513,28 +86559,29 @@ var WalletAuthService = /*#__PURE__*/function () {
       return axios.get(API_URL + "wallet/exists/" + walletAddress);
     }
 
-    // Sign in with wallet
-  }, {
-    key: "walletSignin",
-    value: function walletSignin(walletAddress, signature, message) {
-      return axios.post(API_URL + "wallet/signin", {
-        walletAddress: walletAddress,
-        signature: signature,
-        message: message
-      });
-    }
-
-    // Sign up with wallet
+    // 钱包注册
   }, {
     key: "walletSignup",
-    value: function walletSignup(walletAddress, signature, message, username, email, role) {
-      return axios.post(API_URL + "wallet/signup", {
+    value: function walletSignup(walletAddress, signature, message, username, email, roles) {
+      // 替换 axios.post -> createBaseRequest().post
+      return createBaseRequest().post("/auth/wallet/signup", {
         walletAddress: walletAddress,
         signature: signature,
         message: message,
         username: username,
         email: email,
-        role: role
+        roles: roles
+      });
+    }
+
+    // 钱包登录
+  }, {
+    key: "walletSignin",
+    value: function walletSignin(walletAddress, signature, message) {
+      return createBaseRequest().post("/auth/wallet/signin", {
+        walletAddress: walletAddress,
+        signature: signature,
+        message: message
       });
     }
   }]);
@@ -86547,18 +86594,28 @@ module.exports = new WalletAuthService();
 /*!***********************************!*\
   !*** ./src/main/js/utils/auth.js ***!
   \***********************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((module) => {
 
-var store = __webpack_require__(/*! ../app/configureStore */ "./src/main/js/app/configureStore.js");
+// ❌ 删除这就话，它是循环依赖的罪魁祸首！
+// const store = require("../app/configureStore");
+
 function getAuthHeader() {
-  var user = store.getState().auth.user;
-  if (user && user.accessToken) {
-    return {
-      Authorization: "Bearer ".concat(user.accessToken)
-    };
-  } else {
-    return {};
+  // ✅ 直接从浏览器缓存读取用户信息，避开 Redux Store 依赖
+  var userStr = localStorage.getItem("user");
+  if (userStr) {
+    try {
+      var user = JSON.parse(userStr);
+      // 确保 user 对象存在且有 accessToken
+      if (user && user.accessToken) {
+        return {
+          Authorization: "Bearer ".concat(user.accessToken)
+        };
+      }
+    } catch (e) {
+      console.error("Error parsing user from localStorage", e);
+    }
   }
+  return {};
 }
 module.exports = {
   getAuthHeader: getAuthHeader

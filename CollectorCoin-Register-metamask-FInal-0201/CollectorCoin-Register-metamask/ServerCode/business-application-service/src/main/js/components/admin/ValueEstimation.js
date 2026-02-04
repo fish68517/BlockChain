@@ -32,6 +32,9 @@ function ValueEstimation({ listing, isEditable, saveEstimations }) {
       return;
     }
 
+    // === 添加这行日志 ===
+    console.log("🚀 [Frontend] Admin 点击保存估值:", { valueEstimation, repairCost });
+    
     saveEstimations(valueEstimation, repairCost)
       .then(() => {
         setMessage("Saved!");

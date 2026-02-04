@@ -50,12 +50,12 @@ blockchain.enabled=false
 
 ### 1.1 系统要求
 
-| 软件 | 版本 | 说明 |
-|------|------|------|
-| Java | 17+ | 后端运行环境 |
-| Node.js | 18+ | 前端和智能合约 |
-| MySQL | 8.0+ | 数据库 |
-| pnpm | 最新版 | 前端包管理器 |
+| 软件     | 版本   | 说明           |
+| -------- | ------ | -------------- |
+| Java     | 17+    | 后端运行环境   |
+| Node.js  | 18+    | 前端和智能合约 |
+| MySQL    | 8.0+   | 数据库         |
+| pnpm     | 最新版 | 前端包管理器   |
 | MetaMask | 最新版 | 浏览器钱包插件 |
 
 ### 1.2 创建数据库
@@ -89,6 +89,14 @@ npx hardhat node
 ```bash
 cd contracts
 npx hardhat run scripts/deploy.js --network localhost
+
+如果上述运行失败请用下面的指令
+# 1. 部署合约
+npx hardhat run scripts/deploy-cc.js --network localhost
+# (记下这里输出的新的 Factory 地址！)
+
+# 2. 移交权限 (必做，否则后端没法审批)
+npx hardhat run scripts/transfer-factory-ownership.js --network localhost
 ```
 
 > ✅ 记录输出的合约地址，例如：`0x5FbDB2315678afecb367f032d93F642f64180aa3`
@@ -108,10 +116,15 @@ blockchain.contract.marketplace.address=你的合约地址
 ```bash
 cd server
 mvn spring-boot:run
+
+mvn clean package -DskipTests
+./launch.sh 
+
+npm run watch
 ```
 
 > ✅ 看到 "Started CollectorCoinApplication" 表示成功
-> 
+>
 > 后端地址：http://localhost:8080
 
 ### 2.5 启动前端服务
@@ -124,7 +137,7 @@ pnpm dev
 ```
 
 > ✅ 看到 "VITE ready" 表示成功
-> 
+>
 > 前端地址：http://localhost:3000
 
 ---
@@ -137,12 +150,12 @@ pnpm dev
 2. 点击网络下拉菜单 → **添加网络** → **手动添加网络**
 3. 填写以下信息：
 
-| 字段 | 值 |
-|------|-----|
-| 网络名称 | Localhost 8545 |
-| RPC URL | http://localhost:8545 |
-| 链 ID | 31337 |
-| 货币符号 | ETH |
+| 字段     | 值                    |
+| -------- | --------------------- |
+| 网络名称 | Localhost 8545        |
+| RPC URL  | http://localhost:8545 |
+| 链 ID    | 31337                 |
+| 货币符号 | ETH                   |
 
 4. 点击**保存**
 
@@ -151,30 +164,35 @@ pnpm dev
 Hardhat 提供了 20 个预充值账户，每个有 10000 ETH。
 
 **Admin 账户（Account #0）**：
+
 ```
 地址: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 私钥: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 ```
 
 **投资者账户（Account #1）**：
+
 ```
 地址: 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 私钥: 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d
 ```
 
 **修复师账户（Account #2）**：
+
 ```
 地址: 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
 私钥: 0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a
 ```
 
 **买家账户（Account #3）**：
+
 ```
 地址: 0x90F79bf6EB2c4f870365E785982E1f101E93b906
 私钥: 0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6
 ```
 
 **导入方法**：
+
 1. MetaMask → 点击头像 → **导入账户**
 2. 选择**私钥**
 3. 粘贴私钥 → **导入**
@@ -206,6 +224,7 @@ SELECT id, username, role FROM users;
 **方法二：使用已存在的测试账户**
 
 如果数据库中已有用户，可以直接使用：
+
 - 用户名：`testadmin`（或你注册的用户名）
 - 密码：注册时设置的密码
 
@@ -240,6 +259,7 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 ```
 
 **关键变化**：
+
 - Owner 提交时需填写自己的估值（供 Admin 参考）
 - 修复师需要竞价，Admin 选择最低价
 - 投资达到 funding target 后**自动分配**修复师
@@ -257,14 +277,14 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 2. 点击左侧菜单 **Create Listing** 或首页的 **Create New Listing** 按钮
 3. 填写项目信息：
 
-| 字段 | 示例值 | 说明 |
-|------|--------|------|
-| Title | 1965 Ford Mustang Fastback | 项目标题 |
-| Description | Classic muscle car, needs full restoration. | 项目描述 |
-| VIN (可选) | 5F09A123456 | 车辆识别号 |
-| Image | 上传一张汽车图片 | 项目图片 |
-| **Estimated Final Value (CCT)** | 5.0 | Owner 估计的最终价值 |
-| **Estimated Repair Cost (CCT)** | 1.5 | Owner 估计的修复成本 |
+| 字段                                  | 示例值                                      | 说明                 |
+| ------------------------------------- | ------------------------------------------- | -------------------- |
+| Title                                 | 1965 Ford Mustang Fastback                  | 项目标题             |
+| Description                           | Classic muscle car, needs full restoration. | 项目描述             |
+| VIN (可选)                            | 5F09A123456                                 | 车辆识别号           |
+| Image                                 | 上传一张汽车图片                            | 项目图片             |
+| **Estimated Final Value (CCT)** | 5.0                                         | Owner 估计的最终价值 |
+| **Estimated Repair Cost (CCT)** | 1.5                                         | Owner 估计的修复成本 |
 
 4. 点击 **Create Listing**
 
@@ -298,14 +318,15 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 2. 点击 **Estimate** 按钮
 3. 参考 Owner 提交的估值，填写最终估值：
 
-| 字段 | 示例值 | 说明 |
-|------|--------|------|
-| Value (CCT) | 5.0 | 项目最终估值（参考 Owner 估值） |
-| Repair Cost (CCT) | 1.5 | 修复成本（参考 Owner 估值） |
+| 字段              | 示例值 | 说明                            |
+| ----------------- | ------ | ------------------------------- |
+| Value (CCT)       | 5.0    | 项目最终估值（参考 Owner 估值） |
+| Repair Cost (CCT) | 1.5    | 修复成本（参考 Owner 估值）     |
 
 4. 点击 **OK**
 
 > ✅ 系统自动执行：
+>
 > - 生成 NFT 元数据
 > - 上传到 IPFS（Mock 模式）
 > - 调用智能合约 `mintDNFT()` 铸造 NFT
@@ -313,6 +334,7 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 > - NFT 标签显示 **Minted**
 
 **后端日志会显示**：
+
 ```
 [DEMO MODE] Mock dNFT minted with tokenId: 1001
 ```
@@ -329,6 +351,7 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 2. 点击 **Launch** 按钮
 
 > ✅ 系统调用 `launchDNFT()` 将 NFT 上架市场
+>
 > - 状态变为 **LAUNCHED**
 > - NFT 标签显示 **Launched**
 
@@ -348,9 +371,9 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 4. 点击 **Bid** 按钮（或进入详情页）
 5. 填写竞价信息：
 
-| 字段 | 示例值 | 说明 |
-|------|--------|------|
-| Bid Amount (CCT) | 1.2 | 修复师愿意接受的修复费用 |
+| 字段             | 示例值 | 说明                     |
+| ---------------- | ------ | ------------------------ |
+| Bid Amount (CCT) | 1.2    | 修复师愿意接受的修复费用 |
 
 6. 点击 **Submit Bid**
 
@@ -372,6 +395,7 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 4. 点击最低价竞价旁的 **Select** 按钮
 
 > ✅ 系统执行：
+>
 > - 选中的竞价状态变为 SELECTED
 > - 其他竞价状态变为 REJECTED
 > - Listing 的 fundingTarget 设为选中的竞价金额
@@ -393,15 +417,16 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 4. 或直接点击 **Invest** 按钮
 5. 进入投资页面后：
 
-| 字段 | 示例值 |
-|------|--------|
-| Investment Amount (CCT) | 0.5 |
+| 字段                    | 示例值 |
+| ----------------------- | ------ |
+| Investment Amount (CCT) | 0.5    |
 
 6. 点击 **Invest**
 
 > ✅ 系统调用 `addInvestor()` 记录投资
 >
 > 💡 **自动分配机制**：当总投资金额达到 fundingTarget 时：
+>
 > - 状态自动变为 **FUNDED**
 > - 系统自动调用 `updateRestorer()` 分配修复师
 > - 状态变为 **RESTORING**
@@ -421,6 +446,7 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 3. 点击 **Complete** 按钮
 
 > ✅ 系统调用 `markRestorationComplete()` 标记修复完成
+>
 > - 状态变为 **RESTORED**
 
 ---
@@ -436,13 +462,14 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 3. 点击 **Start Auction** 按钮
 4. 输入拍卖价格：
 
-| 字段 | 示例值 |
-|------|--------|
-| Auction Price (CCT) | 8.0 |
+| 字段                | 示例值 |
+| ------------------- | ------ |
+| Auction Price (CCT) | 8.0    |
 
 5. 点击 **OK**
 
 > ✅ 系统调用 `setItemForSale()` 设置拍卖价格并解锁 NFT 转移
+>
 > - 状态变为 **AUCTION**
 
 ---
@@ -458,9 +485,9 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 3. 点击进入详情页，或点击 **Bid** 按钮
 4. 进入拍卖页面：
 
-| 字段 | 示例值 |
-|------|--------|
-| Bid Amount (CCT) | 8.5 |
+| 字段             | 示例值 |
+| ---------------- | ------ |
+| Bid Amount (CCT) | 8.5    |
 
 5. 点击 **Place Bid**
 
@@ -486,6 +513,7 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 5. 点击 **OK**
 
 > ✅ 系统执行：
+>
 > - 调用 `redistributeFunds()` 分配收益给投资者
 > - 调用 `transferToWinner()` 将 NFT 转移给获胜者
 > - 状态变为 **SOLD**
@@ -515,64 +543,74 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 
 ### 6.3 查看我的资产
 
-| 页面 | 说明 |
-|------|------|
-| My Items | 我创建的 Listing |
-| My Investments | 我的投资记录 |
-| My Purchases | 我购买的 NFT |
+| 页面           | 说明             |
+| -------------- | ---------------- |
+| My Items       | 我创建的 Listing |
+| My Investments | 我的投资记录     |
+| My Purchases   | 我购买的 NFT     |
 
 ---
 
 ## 常见问题
 
 ### Q: 页面显示空白或无法加载？
+
 **A**: 检查后端服务是否正常运行，查看浏览器控制台是否有错误。
 
 ### Q: 登录失败显示 "Invalid username or password"？
-**A**: 
+
+**A**:
+
 1. 确认用户名和密码正确
 2. 如果用户不存在，需要先注册
 3. **注意**：内置 Admin 账户（Tulip）可能密码编码不正确，建议注册新用户后通过数据库升级为 ADMIN
 
 ### Q: 按钮点击无反应？
+
 **A**: 检查当前用户角色是否有权限执行该操作。普通 USER 角色无法访问 Admin Panel。
 
 ### Q: 状态没有更新？
+
 **A**: 刷新页面，或检查后端日志是否有错误。
 
 ### Q: 结束拍卖时出现 500 错误或 "ERC1155InsufficientBalance"？
+
 **A**: 这是因为 `blockchain.enabled=true` 但链上 NFT 没有正确铸造。解决方案：
+
 1. 编辑 `server/src/main/resources/application.properties`
 2. 设置 `blockchain.enabled=false`
 3. 重启后端服务
 4. 重新创建一个 listing 测试
 
 ### Q: MetaMask 无法连接？
-**A**: 
+
+**A**:
+
 1. 确保 Hardhat 节点正在运行
 2. 确保 MetaMask 网络切换到 Localhost 8545
 3. 刷新页面重试
 
 ### Q: 如何查看后端日志？
+
 **A**: 后端日志会显示在运行 `mvn spring-boot:run` 的终端窗口中，包含所有 API 调用和区块链操作的详细信息。
 
 ---
 
 ## 角色权限速查表
 
-| 操作 | ADMIN | OWNER | INVESTOR | RESTORER | BUYER |
-|------|-------|-------|----------|----------|-------|
-| 创建 Listing | ✅ | ✅ | ❌ | ❌ | ❌ |
-| 验证项目 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 估值 + 铸造 NFT | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 上架市场 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 修复师竞价 | ❌ | ❌ | ❌ | ✅ | ❌ |
-| 选择修复师 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 投资 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 完成修复 | ✅ | ❌ | ❌ | ✅ | ❌ |
-| 开始拍卖 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 出价 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 结束拍卖 | ✅ | ❌ | ❌ | ❌ | ❌ |
+| 操作            | ADMIN | OWNER | INVESTOR | RESTORER | BUYER |
+| --------------- | ----- | ----- | -------- | -------- | ----- |
+| 创建 Listing    | ✅    | ✅    | ❌       | ❌       | ❌    |
+| 验证项目        | ✅    | ❌    | ❌       | ❌       | ❌    |
+| 估值 + 铸造 NFT | ✅    | ❌    | ❌       | ❌       | ❌    |
+| 上架市场        | ✅    | ❌    | ❌       | ❌       | ❌    |
+| 修复师竞价      | ❌    | ❌    | ❌       | ✅       | ❌    |
+| 选择修复师      | ✅    | ❌    | ❌       | ❌       | ❌    |
+| 投资            | ✅    | ✅    | ✅       | ✅       | ✅    |
+| 完成修复        | ✅    | ❌    | ❌       | ✅       | ❌    |
+| 开始拍卖        | ✅    | ❌    | ❌       | ❌       | ❌    |
+| 出价            | ✅    | ✅    | ✅       | ✅       | ✅    |
+| 结束拍卖        | ✅    | ❌    | ❌       | ❌       | ❌    |
 
 ---
 
@@ -580,12 +618,12 @@ Owner提交项目 → 验证 → 估值(铸造NFT) → 上架 → 修复师竞�
 
 > ⚠️ **推荐**：注册新用户后通过数据库升级为 ADMIN，而不是使用内置账户
 
-| 角色 | 创建方式 | 说明 |
-|------|----------|------|
-| Admin | 注册 + 数据库升级 | `UPDATE users SET role='ADMIN' WHERE username='xxx';` |
-| 投资者 | 使用 Hardhat 地址 | 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 |
-| 修复师 | 使用 Hardhat 地址 | 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC |
-| 买家 | 使用 Hardhat 地址 | 0x90F79bf6EB2c4f870365E785982E1f101E93b906 |
+| 角色   | 创建方式          | 说明                                                    |
+| ------ | ----------------- | ------------------------------------------------------- |
+| Admin  | 注册 + 数据库升级 | `UPDATE users SET role='ADMIN' WHERE username='xxx';` |
+| 投资者 | 使用 Hardhat 地址 | 0x70997970C51812dc3A010C7d01b50e0d17dc79C8              |
+| 修复师 | 使用 Hardhat 地址 | 0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC              |
+| 买家   | 使用 Hardhat 地址 | 0x90F79bf6EB2c4f870365E785982E1f101E93b906              |
 
 ---
 
@@ -613,14 +651,15 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/listings" -Headers $headers
 ## 更新日志
 
 - **v2.0 (2026-01-30)**:
+
   - 新增 CCToken (ERC-20) 作为平台货币
   - 新增 Owner 估值功能（ownerValueEstimation, ownerRepairEstimation）
   - 新增修复师竞价系统（Restorer Bidding）
   - 新增投资达标自动分配修复师功能
   - 更新业务流程图和步骤说明
   - 更新角色权限速查表
-
 - **v1.1 (2026-01-30)**:
+
   - 添加 Demo 模式配置说明
   - 修复 Admin 账户创建说明
   - 添加常见问题解决方案
@@ -633,6 +672,7 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/listings" -Headers $headers
 ### 7.1 什么是 CCToken？
 
 CCToken (CCT) 是 CollectorCoin 平台的原生 ERC-20 代币，用于：
+
 - 投资项目
 - 修复师竞价
 - 拍卖出价
@@ -642,13 +682,13 @@ CCToken (CCT) 是 CollectorCoin 平台的原生 ERC-20 代币，用于：
 
 ### 7.2 CCToken 合约信息
 
-| 属性 | 值 |
-|------|-----|
-| 名称 | Collector Coin Token |
-| 符号 | CCT |
-| 精度 | 18 decimals |
-| 初始供应量 | 1,000,000 CCT |
-| 合约文件 | `contracts/contracts/CCToken.sol` |
+| 属性       | 值                                  |
+| ---------- | ----------------------------------- |
+| 名称       | Collector Coin Token                |
+| 符号       | CCT                                 |
+| 精度       | 18 decimals                         |
+| 初始供应量 | 1,000,000 CCT                       |
+| 合约文件   | `contracts/contracts/CCToken.sol` |
 
 ### 7.3 CCToken 功能
 

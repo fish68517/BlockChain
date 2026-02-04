@@ -90,6 +90,8 @@ function WalletLogin(props) {
   };
 
   const handleWalletLogin = async (address) => {
+    // 打印
+    console.log("handleWalletLogin：", address);
     setLoading(true);
     setErrorMessage("");
 

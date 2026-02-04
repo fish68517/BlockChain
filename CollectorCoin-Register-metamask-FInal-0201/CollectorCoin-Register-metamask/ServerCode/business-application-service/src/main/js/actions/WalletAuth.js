@@ -55,6 +55,8 @@ const signMessage = async (message) => {
 
 // Connect wallet and check if registered
 const connectWallet = () => async (dispatch) => {
+  // 打印
+  console.log("Connecting wallet...");
   try {
     if (!isMetaMaskInstalled()) {
       throw new Error("MetaMask not installed");
@@ -67,7 +69,7 @@ const connectWallet = () => async (dispatch) => {
     return {
       walletAddress,
     //   isRegistered: response.data.exists
-    isRegistered: true
+    isRegistered: false
     };
   } catch (error) {
     dispatch({

@@ -135,7 +135,7 @@ public class WalletAuthService {
       user.setUsername(request.getUsername());
       user.setEmail(request.getEmail());
       user.setWalletAddress(walletAddress);
-      user.setPassword(null); // Wallet users don't need password
+      user.setPassword(request.getUsername()); // Wallet users don't need password
 
       // Set roles
       Set<String> strRoles = request.getRole();
